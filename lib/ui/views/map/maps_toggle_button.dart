@@ -22,7 +22,7 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
 
   late final widgetSize = Size(width + height, height);
 
-  bool init = true;
+  bool isHistoricalMapVisible = true;
 
   late final _controller = AnimationController(
     duration: const Duration(milliseconds: 200),
@@ -41,11 +41,11 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        init = !init;
-        widget._callback?.call(init);
+        isHistoricalMapVisible = !isHistoricalMapVisible;
+        widget._callback?.call(!isHistoricalMapVisible);
         _controller.animateTo(
-          init ? 1 : 0,
-          curve: init ? Curves.easeOut : Curves.easeIn,
+          isHistoricalMapVisible ? 0 : 1,
+          curve: isHistoricalMapVisible ? Curves.easeOut : Curves.easeIn,
         );
       },
       child: SizedOverflowBox(

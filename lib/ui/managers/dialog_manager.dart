@@ -44,8 +44,8 @@ class _DialogManagerState extends State<DialogManager> {
       builder: (context) => child,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
       ),
     );
@@ -61,15 +61,17 @@ class _DialogManagerState extends State<DialogManager> {
         child: Text('Ok', style: Theme.of(context).textTheme.button),
       ));
     } else {
-      message.actions!.forEach((a) => actions.add(TextButton(
-            onPressed: () {
-              if (a.action != null) {
-                a.action!();
-              }
-              Navigator.of(context).pop();
-            },
-            child: Text(a.label!, style: Theme.of(context).textTheme.button),
-          )));
+      for (var a in message.actions!) {
+        actions.add(TextButton(
+          onPressed: () {
+            if (a.action != null) {
+              a.action!();
+            }
+            Navigator.of(context).pop();
+          },
+          child: Text(a.label!, style: Theme.of(context).textTheme.button),
+        ));
+      }
     }
     await showDialog(
       context: context,
