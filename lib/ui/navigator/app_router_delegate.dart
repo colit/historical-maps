@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/services/bottom_sheet_service.dart';
+import '../../core/services/dialog_service.dart';
 import '../../core/entitles/app_page.dart';
 import '../../core/entitles/startup_state.dart';
-import '../../ui/commons/enums.dart';
+import '../commons/enums.dart';
+import '../managers/dialog_manager.dart';
 import 'page_creator.dart';
 import 'routes/routes.dart';
 
@@ -21,20 +24,23 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
     currentBuildPage = Provider.of<StartupState>(context).currentPage;
     var shouldLoadData = lastBuildPage != null;
     lastBuildPage = currentBuildPage;
-    print('AppRouterDelegate.build()');
     return Navigator(
       pages: [
         MaterialPage(
-          child: Navigator(
-            key: navigatorKey,
-            pages: PageCreator.getPagesList([
-              AppPage(
-                type: currentBuildPage,
-                arguments: [shouldLoadData],
-                key: UniqueKey(),
-              )
-            ]),
-            onPopPage: (route, result) => route.didPop(result),
+          child: DialogManager(
+            dialogService: Provider.of<DialogService>(context),
+            bottomSheetService: Provider.of<BottomSheetService>(context),
+            child: Navigator(
+              key: navigatorKey,
+              pages: PageCreator.getPagesList([
+                AppPage(
+                  type: currentBuildPage,
+                  arguments: [shouldLoadData],
+                  key: UniqueKey(),
+                )
+              ]),
+              onPopPage: (route, result) => route.didPop(result),
+            ),
           ),
         ),
       ],

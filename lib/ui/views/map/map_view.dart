@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ import '../../commons/enums.dart';
 import '../../widgets/base_widget.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/services/maps_service.dart';
+import 'map_library_widget.dart';
 import 'map_model.dart';
 import 'maps_toggle_button.dart';
 
@@ -83,6 +85,13 @@ class MapView extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          ElevatedButton(
+                            onPressed: () => Provider.of<BottomSheetService>(
+                                    context,
+                                    listen: false)
+                                .showBottomSheet(const MapsLibraryWidget()),
+                            child: const Text('Map Library'),
+                          ),
                           Expanded(child: Container()),
                           MapsToggleButton(
                             callback: model.setMapView,
