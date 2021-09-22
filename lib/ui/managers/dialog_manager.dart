@@ -41,6 +41,7 @@ class _DialogManagerState extends State<DialogManager> {
   void _showModalSheet(Widget child) {
     showModalBottomSheet(
       context: context,
+      enableDrag: false,
       builder: (context) => child,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

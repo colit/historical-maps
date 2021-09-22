@@ -89,15 +89,16 @@ class MapView extends StatelessWidget {
                             onPressed: () => Provider.of<BottomSheetService>(
                                     context,
                                     listen: false)
-                                .showBottomSheet(const MapsLibraryWidget()),
-                            child: const Text('Map Library'),
+                                .showBottomSheet(MapsLibraryWidget()),
+                            child: const Text('Karten'),
                           ),
                           Expanded(child: Container()),
                           MapsToggleButton(
                             callback: model.setMapView,
                             label: Provider.of<MapService>(context)
                                 .currentMap
-                                .year,
+                                .year
+                                .toString(),
                           ),
                         ],
                       ),

@@ -47,7 +47,7 @@ class MapService {
     }
     _currentMap = MapData(
       name: 'Köln im Mittelalter',
-      year: '1450',
+      year: 1450,
       path: pathToMap,
     );
     print('geladen: ${_currentMap.path}');
