@@ -11,8 +11,8 @@ class ParseInitApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Parse().initialize(
-        kApplicationId,
-        kParseServerUrl,
+        ParseConstants.applicationId,
+        ParseConstants.serverUrl,
       ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {

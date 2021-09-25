@@ -9,7 +9,7 @@ import '../../commons/enums.dart';
 import '../../widgets/base_widget.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/services/maps_service.dart';
-import 'map_library_widget.dart';
+import '../maps_library/map_library_widget.dart';
 import 'map_model.dart';
 import 'maps_toggle_button.dart';
 

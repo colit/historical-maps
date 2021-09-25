@@ -3,15 +3,21 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'package:historical_maps/core/services/interfaces/i_database_repository.dart';
 import 'package:historical_maps/core/entitles/map_data.dart';
 
 class MapService {
-  late MapData _currentMap;
-  List<MapData> _allMaps = [];
+  MapService({required IDatabaseRepository databaseRepository})
+      : _databaseRepository = databaseRepository;
+
+  final IDatabaseRepository _databaseRepository;
+  late MapEntity _currentMap;
+  List<MapEntity> _allMaps = [];
 
   void registerMap() {}
 
-  MapData get currentMap => _currentMap;
+  MapEntity get currentMap => _currentMap;
 
   String? get currentMapDataPath {
     return _currentMap.path;
@@ -20,8 +26,6 @@ class MapService {
   bool setCurrentMap() {
     return true;
   }
-
-  void getMapsList() {}
 
   Future<void> initLocalMaps() async {
     final bytes = await rootBundle.load('assets/maps/1450.zip');
@@ -45,12 +49,16 @@ class MapService {
         Directory(dir).create(recursive: true);
       }
     }
-    _currentMap = MapData(
+    _currentMap = MapEntity(
       name: 'Köln im Mittelalter',
       year: 1450,
       path: pathToMap,
+      isRemovable: false,
     );
-    print('geladen: ${_currentMap.path}');
+  }
+
+  Future<void> getMapsList() async {
+    final maps = _databaseRepository.getMaps();
   }
 
   Future<String> get _localPath async {

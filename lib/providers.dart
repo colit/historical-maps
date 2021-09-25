@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:historical_maps/core/data_source/database_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
@@ -22,15 +23,19 @@ List<SingleChildWidget> providers = [
 
 List<SingleChildWidget> independentServices = [
   Provider(create: (_) => PersistentRepository()),
+  Provider(create: (_) => MongoDatabaseRepository()),
   Provider(create: (_) => StartupService()),
   Provider(create: (_) => LocationService()),
   Provider(create: (_) => ShellStateService()),
-  Provider(create: (_) => MapService()),
   Provider(create: (_) => BottomSheetService()),
   Provider(create: (_) => DialogService()),
 ];
 
 List<SingleChildWidget> dependentServices = [
+  ProxyProvider<MongoDatabaseRepository, MapService>(
+    update: (_, databaseRepository, __) =>
+        MapService(databaseRepository: databaseRepository),
+  ),
   // ProxyProvider<DialogService, GeolocatorService>(
   //   update: (_, dialogService, __) =>
   //       GeolocatorService(dialogService: dialogService),

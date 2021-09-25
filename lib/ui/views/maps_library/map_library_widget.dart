@@ -13,16 +13,16 @@ class MapsLibraryWidget extends StatefulWidget {
 }
 
 class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
-  final List<MapData> maps = [
-    MapData(
+  final List<MapEntity> maps = [
+    MapEntity(
       name: 'Karte von 1450',
       year: 1450,
     ),
-    MapData(
+    MapEntity(
       name: 'Karte von 1915',
       year: 1915,
     ),
-    MapData(
+    MapEntity(
       name: 'Karte von 1964',
       year: 1964,
     ),

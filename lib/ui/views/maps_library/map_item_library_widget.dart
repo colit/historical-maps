@@ -11,7 +11,7 @@ class MapLibraryItemWidget extends StatelessWidget {
         _index = index,
         super(key: key);
 
-  final MapData mapItem;
+  final MapEntity mapItem;
   final Function(int)? _callback;
   final int _index;
 
