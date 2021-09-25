@@ -11,7 +11,7 @@ class GraphQLQueries {
 
   static get graphqlAPI => '${ParseConstants.serverUrl}graphql';
 
-  static const getAllStones = r'''query getMaps{
+  static const getMaps = r'''query getMaps{
     maps {
       edges{
         node {

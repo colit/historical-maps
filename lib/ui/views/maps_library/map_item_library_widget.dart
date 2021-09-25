@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/entitles/map_data.dart';
+import '../../../core/entitles/map_entity.dart';
 
 class MapLibraryItemWidget extends StatelessWidget {
   const MapLibraryItemWidget({

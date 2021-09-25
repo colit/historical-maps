@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:historical_maps/core/entitles/map_data.dart';
+import 'package:historical_maps/core/entitles/map_entity.dart';
+import 'package:historical_maps/core/services/maps_service.dart';
+import 'package:provider/provider.dart';
 
 import 'map_item_library_widget.dart';
 
@@ -13,20 +15,23 @@ class MapsLibraryWidget extends StatefulWidget {
 }
 
 class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
-  final List<MapEntity> maps = [
-    MapEntity(
-      name: 'Karte von 1450',
-      year: 1450,
-    ),
-    MapEntity(
-      name: 'Karte von 1915',
-      year: 1915,
-    ),
-    MapEntity(
-      name: 'Karte von 1964',
-      year: 1964,
-    ),
-  ];
+  // [
+  //   MapEntity(
+  //     id: 'Karte von 1450',
+  //     name: 'Karte von 1450',
+  //     year: 1450,
+  //   ),
+  //   MapEntity(
+  //     id: 'Karte von 1915',
+  //     name: 'Karte von 1915',
+  //     year: 1915,
+  //   ),
+  //   MapEntity(
+  //     id: 'Karte von 1964',
+  //     name: 'Karte von 1964',
+  //     year: 1964,
+  //   ),
+  // ];
 
   final controller = PageController(
     viewportFraction: 0.35,
@@ -45,6 +50,8 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final List<MapEntity> maps =
+        Provider.of<MapService>(context, listen: false).maps;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(top: 30, bottom: 15),

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:historical_maps/core/services/interfaces/i_database_repository.dart';
-import 'package:historical_maps/core/entitles/map_data.dart';
+import 'package:historical_maps/core/entitles/map_entity.dart';
 
 class MapService {
   MapService({required IDatabaseRepository databaseRepository})
@@ -13,7 +13,9 @@ class MapService {
 
   final IDatabaseRepository _databaseRepository;
   late MapEntity _currentMap;
-  List<MapEntity> _allMaps = [];
+  List<MapEntity> _maps = [];
+
+  List<MapEntity> get maps => _maps;
 
   void registerMap() {}
 
@@ -50,6 +52,7 @@ class MapService {
       }
     }
     _currentMap = MapEntity(
+      id: 'MAP_1450',
       name: 'Köln im Mittelalter',
       year: 1450,
       path: pathToMap,
@@ -58,7 +61,8 @@ class MapService {
   }
 
   Future<void> getMapsList() async {
-    final maps = _databaseRepository.getMaps();
+    final maps = await _databaseRepository.getMaps();
+    _maps = [_currentMap, ...maps];
   }
 
   Future<String> get _localPath async {

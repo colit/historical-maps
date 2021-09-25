@@ -1,5 +1,6 @@
 class MapEntity {
   MapEntity({
+    required this.id,
     required this.name,
     required this.year,
     this.path,
@@ -7,6 +8,7 @@ class MapEntity {
     bool isRemovable = true,
   }) : _isRemovable = isRemovable;
 
+  final String id;
   final String name;
   final int year;
   final String? path;
@@ -16,4 +18,12 @@ class MapEntity {
   bool get isInstalled => path != null;
 
   bool get isRemovable => _isRemovable;
+
+  factory MapEntity.fromGraphQL(node) {
+    return MapEntity(
+      id: node['id'],
+      name: node['name'],
+      year: node['year'],
+    );
+  }
 }
