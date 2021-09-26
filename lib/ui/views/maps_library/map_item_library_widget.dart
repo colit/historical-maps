@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/core/entitles/loading_state_value.dart';
+import 'package:historical_maps/core/services/maps_service.dart';
+import 'package:historical_maps/ui/commons/enums.dart';
+import 'package:provider/provider.dart';
 import '../../../core/entitles/map_entity.dart';
 
 class MapLibraryItemWidget extends StatelessWidget {
@@ -17,13 +21,28 @@ class MapLibraryItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSelected =
+        mapItem.id == Provider.of<MapService>(context).currentMap.id;
     return GestureDetector(
       onTap: () => _callback?.call(_index),
-      child: Container(
-        alignment: Alignment.center,
-        child: Text(mapItem.year.toString()),
-        color: Colors.amber.withAlpha(100),
-      ),
+      child: Consumer<LoadingValue>(builder: (context, state, child) {
+        final isLoading =
+            (state.objectId == mapItem.id && state.state != LoadingState.idle);
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Text(mapItem.year.toString()),
+              color: isSelected ? Colors.amber.withAlpha(100) : Colors.white,
+            ),
+            if (isLoading && state.state == LoadingState.progress)
+              CircularProgressIndicator(value: state.value)
+            else if (isLoading && state.state == LoadingState.busy)
+              const CircularProgressIndicator(),
+          ],
+        );
+      }),
     );
     // Container(
     //   alignment: Alignment.center,

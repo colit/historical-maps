@@ -34,6 +34,7 @@ dependencies:
   flutter_archive: ^4.0.1
   archive: ^3.1.2
   graphql: ^5.0.0
+  flutter_downloader: ^1.7.0
 
 
 dev_dependencies:

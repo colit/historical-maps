@@ -6,6 +6,8 @@ PODS:
   - flutter_archive (0.0.1):
     - Flutter
     - ZIPFoundation (= 0.9.11)
+  - flutter_downloader (0.0.1):
+    - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
   - package_info_plus (0.4.5):
@@ -21,6 +23,7 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_archive (from `.symlinks/plugins/flutter_archive/ios`)
+  - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -38,6 +41,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_archive:
     :path: ".symlinks/plugins/flutter_archive/ios"
+  flutter_downloader:
+    :path: ".symlinks/plugins/flutter_downloader/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   package_info_plus:
@@ -51,6 +56,7 @@ SPEC CHECKSUMS:
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_archive: e7010a2779b4ff1483b00386bfb4e847f5836182
+  flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

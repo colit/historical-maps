@@ -26,6 +26,11 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>App needs access to location and direction when open.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

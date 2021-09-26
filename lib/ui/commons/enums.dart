@@ -1,4 +1,13 @@
-enum ViewState { idle, busy }
+enum ViewState {
+  idle,
+  busy,
+}
+
+enum LoadingState {
+  idle,
+  busy,
+  progress,
+}
 
 enum PageType {
   startup,

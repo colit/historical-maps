@@ -55,7 +55,6 @@ class MongoDatabaseRepository implements IDatabaseRepository {
           title: 'graphQL Exception', message: result.exception.toString());
     } else {
       url = result.data?['map']['data']?['url'];
-      print(url);
     }
 
     return url;

@@ -31,7 +31,7 @@ class ShellStateService {
 
   final _shellStateController = StreamController<ShellState>();
 
-  Stream<ShellState> get sellState => _shellStateController.stream;
+  Stream<ShellState> get shellState => _shellStateController.stream;
 
   // final Map<int, List<AppPage>> _shellMap = {};
 

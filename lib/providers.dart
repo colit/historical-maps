@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:historical_maps/core/data_source/database_repository.dart';
+import 'package:historical_maps/core/entitles/loading_state_value.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
@@ -52,7 +53,12 @@ List<SingleChildWidget> uiConsumableProviders = [
     initialData:
         ShellState(pages: [AppPage(type: PageType.map)], currentShellIndex: 0),
     create: (context) =>
-        Provider.of<ShellStateService>(context, listen: false).sellState,
+        Provider.of<ShellStateService>(context, listen: false).shellState,
+  ),
+  StreamProvider<LoadingValue>(
+    initialData: LoadingValue(),
+    create: (context) =>
+        Provider.of<MapService>(context, listen: false).loadingState,
   ),
   StreamProvider<Position?>(
     initialData: null,
