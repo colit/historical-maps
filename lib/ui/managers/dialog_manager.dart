@@ -4,12 +4,14 @@ import '../../core/services/bottom_sheet_service.dart';
 import '../../core/services/dialog_service.dart';
 
 class DialogManager extends StatefulWidget {
-  DialogManager(
-      {this.child,
+  const DialogManager(
+      {Key? key,
+      this.child,
       required DialogService dialogService,
       required BottomSheetService bottomSheetService})
       : _dialogService = dialogService,
-        _bottomSheetService = bottomSheetService;
+        _bottomSheetService = bottomSheetService,
+        super(key: key);
 
   final Widget? child;
   final DialogService _dialogService;

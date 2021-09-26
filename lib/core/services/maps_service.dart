@@ -69,4 +69,15 @@ class MapService {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
+
+  void loadMap(MapEntity selectedMap) async {
+    final id = selectedMap.id;
+    // 1. get details for id
+    final url = await _databaseRepository.getMapURLForId(id);
+    if (url == null) return;
+    // 2. download file
+    print('download from $url');
+    // 3. save it
+    // 4. update data set
+  }
 }

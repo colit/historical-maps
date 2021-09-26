@@ -21,7 +21,7 @@ class MapEntity {
 
   factory MapEntity.fromGraphQL(node) {
     return MapEntity(
-      id: node['id'],
+      id: node['objectId'],
       name: node['name'],
       year: node['year'],
     );

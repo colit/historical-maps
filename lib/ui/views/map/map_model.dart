@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:historical_maps/core/services/location_service.dart';

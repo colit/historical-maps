@@ -25,14 +25,16 @@ class StartupView extends StatelessWidget {
                 locationService: Provider.of<LocationService>(context),
               ),
               onModelReady: (model) => model.initStartupState(),
-              builder: (_, model, __) => Stack(
-                children: const [
-                  SplashImageWidget(),
-                  Center(
-                    child: Text('loading...'),
-                  ),
-                ],
-              ),
+              builder: (_, model, __) {
+                return Stack(
+                  children: const [
+                    SplashImageWidget(),
+                    Center(
+                      child: Text('loading...'),
+                    ),
+                  ],
+                );
+              },
             ),
           )
         : Container();

@@ -11,15 +11,27 @@ class GraphQLQueries {
 
   static get graphqlAPI => '${ParseConstants.serverUrl}graphql';
 
-  static const getMaps = r'''query getMaps{
-    maps {
-      edges{
-        node {
-          id,
-          name,
-          year
+  static const getMaps = r'''
+    query getMaps{
+      maps {
+        edges{
+          node {
+            objectId,
+            name,
+            year
+          }
         }
       }
     }
-  }''';
+  ''';
+
+  static const getMapUrlforId = r'''
+    query getMapUrlforId($mapId: ID!) {
+      map(id: $mapId) {
+        data{
+          url
+        }
+      }
+    }
+  ''';
 }

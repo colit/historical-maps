@@ -25,7 +25,7 @@ class LocationService {
   }
 
   Future<void> requestPermission() async {
-    final permission = await Geolocator.requestPermission();
+    await Geolocator.requestPermission();
     // if (permission == LocationPermission.always ||
     //     permission == LocationPermission.whileInUse) {
     //   _positionStream =
