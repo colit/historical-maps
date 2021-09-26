@@ -11,9 +11,10 @@ class MapEntity {
   final String id;
   final String name;
   final int year;
-  final String? path;
   final bool local;
   final bool _isRemovable;
+
+  String? path;
 
   bool get isInstalled => path != null;
 

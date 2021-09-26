@@ -30,8 +30,7 @@ class MapLibraryModel extends BaseModel {
               AlertAction(
                   label: 'Ja',
                   action: () {
-                    print('Karte laden');
-                    _mapService.loadMap(selectedMap);
+                    _mapService.loadMap(selectedMap, onDone: _onDone);
                   }),
               AlertAction(label: 'Nein')
             ],
@@ -39,5 +38,9 @@ class MapLibraryModel extends BaseModel {
         );
       }
     }
+  }
+
+  void _onDone() {
+    notifyListeners();
   }
 }

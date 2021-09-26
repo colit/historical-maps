@@ -22,7 +22,7 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
     initialPage: 0,
   );
 
-  void _itemCallback(itemIndex) {
+  void _animateToIndex(int itemIndex) {
     if (itemIndex != controller.page) {
       controller.animateToPage(
         itemIndex,
@@ -63,13 +63,13 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
                       controller: controller,
                       itemCount: model.maps.length,
                       onPageChanged: (index) {
-                        print('new poage: $index');
+                        // some actions on page change...
                       },
                       itemBuilder: (context, index) => MapLibraryItemWidget(
                         index: index,
                         mapItem: model.maps[index],
                         callback: (index) {
-                          _itemCallback(index);
+                          _animateToIndex(index);
                           model.setCurrentMap(index);
                         },
                       ),

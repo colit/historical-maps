@@ -33,7 +33,12 @@ class MapLibraryItemWidget extends StatelessWidget {
           children: [
             Container(
               alignment: Alignment.center,
-              child: Text(mapItem.year.toString()),
+              child: Text(
+                mapItem.year.toString(),
+                style: TextStyle(
+                  color: mapItem.isInstalled ? Colors.black : Colors.redAccent,
+                ),
+              ),
               color: isSelected ? Colors.amber.withAlpha(100) : Colors.white,
             ),
             if (isLoading && state.state == LoadingState.progress)

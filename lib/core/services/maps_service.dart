@@ -57,7 +57,8 @@ class MapService {
     _maps = [_currentMap, ...maps];
   }
 
-  void loadMap(MapEntity selectedMap) async {
+  Future<void> loadMap(MapEntity selectedMap,
+      {required Function() onDone}) async {
     final id = selectedMap.id;
     _loadingController.add(
       LoadingValue(objectId: id, state: LoadingState.busy),
@@ -69,7 +70,6 @@ class MapService {
       );
       return;
     }
-    print('download from $url');
     final response =
         await http.Client().send(http.Request('GET', Uri.parse(url)));
     final total = response.contentLength ?? 0;
@@ -96,7 +96,8 @@ class MapService {
         objectId: id,
         state: LoadingState.idle,
       ));
-      print('map saved to $path');
+      selectedMap.path = path;
+      onDone.call();
     });
   }
 
@@ -105,7 +106,6 @@ class MapService {
 
     final localPath = await getApplicationDocumentsDirectory();
     final pathToMap = '${localPath.path}/$year/';
-    print('create map on $pathToMap');
 
     // Extract the contents of the Zip archive to disk.
     for (final file in archive) {
