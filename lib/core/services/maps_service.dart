@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:historical_maps/core/entitles/loading_state_value.dart';
+import 'package:historical_maps/core/services/base_service.dart';
 import 'package:historical_maps/ui/commons/enums.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:historical_maps/core/services/interfaces/i_database_repository.dart';
 import 'package:historical_maps/core/entitles/map_entity.dart';
 
-class MapService {
+class MapService extends BaseService {
   MapService({required IDatabaseRepository databaseRepository})
       : _databaseRepository = databaseRepository;
 
@@ -34,8 +35,9 @@ class MapService {
     return _currentMap.path;
   }
 
-  bool setCurrentMap() {
-    return true;
+  void setCurrentMap(MapEntity selectedMap) {
+    _currentMap = selectedMap;
+    notifyListeners();
   }
 
   Future<void> initLocalMaps() async {
@@ -57,8 +59,7 @@ class MapService {
     _maps = [_currentMap, ...maps];
   }
 
-  Future<void> loadMap(MapEntity selectedMap,
-      {required Function() onDone}) async {
+  Future<void> loadMap(MapEntity selectedMap) async {
     final id = selectedMap.id;
     _loadingController.add(
       LoadingValue(objectId: id, state: LoadingState.busy),
@@ -97,7 +98,9 @@ class MapService {
         state: LoadingState.idle,
       ));
       selectedMap.path = path;
-      onDone.call();
+      _currentMap = selectedMap;
+      print('map is ready: $path');
+      notifyListeners();
     });
   }
 

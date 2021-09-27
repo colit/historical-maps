@@ -9,10 +9,15 @@ class MapLibraryModel extends BaseModel {
   MapLibraryModel(
       {required MapService mapService, required DialogService dialogService})
       : _mapService = mapService,
-        _dialogService = dialogService;
+        _dialogService = dialogService {
+    _mapServiceListenerId =
+        mapService.registerNotifyer((_) => notifyListeners());
+  }
 
   final MapService _mapService;
   final DialogService _dialogService;
+
+  late int _mapServiceListenerId;
 
   List<MapEntity> get maps => _mapService.maps;
 
@@ -20,7 +25,7 @@ class MapLibraryModel extends BaseModel {
     final selectedMap = maps[index];
     if (selectedMap.id != _mapService.currentMap.id) {
       if (selectedMap.isInstalled) {
-        print('map installed');
+        _mapService.setCurrentMap(selectedMap);
       } else {
         _dialogService.showDialog(
           AlertMessage(
@@ -30,7 +35,7 @@ class MapLibraryModel extends BaseModel {
               AlertAction(
                   label: 'Ja',
                   action: () {
-                    _mapService.loadMap(selectedMap, onDone: _onDone);
+                    _mapService.loadMap(selectedMap);
                   }),
               AlertAction(label: 'Nein')
             ],
@@ -40,7 +45,9 @@ class MapLibraryModel extends BaseModel {
     }
   }
 
-  void _onDone() {
-    notifyListeners();
+  @override
+  void dispose() {
+    _mapService.disposeListener(_mapServiceListenerId);
+    super.dispose();
   }
 }

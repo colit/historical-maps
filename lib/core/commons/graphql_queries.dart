@@ -28,9 +28,7 @@ class GraphQLQueries {
   static const getMapUrlforId = r'''
     query getMapUrlforId($mapId: ID!) {
       map(id: $mapId) {
-        data{
-          url
-        }
+        url
       }
     }
   ''';

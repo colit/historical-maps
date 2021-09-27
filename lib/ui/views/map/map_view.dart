@@ -18,9 +18,11 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapPath = Provider.of<MapService>(context).currentMapDataPath ?? '';
     return BaseWidget<MapModel>(
-      model: MapModel(locationService: Provider.of<LocationService>(context)),
+      model: MapModel(
+        locationService: Provider.of<LocationService>(context),
+        mapService: Provider.of<MapService>(context),
+      ),
       onModelReady: (model) => model.registerController(MapController()),
       builder: (_, model, __) => model.state == ViewState.idle
           ? Scaffold(
@@ -61,7 +63,7 @@ class MapView extends StatelessWidget {
                               subdomains: ['a', 'b', 'c'])
                           : TileLayerOptions(
                               tileProvider: const FileTileProvider(),
-                              urlTemplate: "$mapPath{z}/{x}/{y}.png",
+                              urlTemplate: "${model.mapPath}{z}/{x}/{y}.jpg",
                             ),
                       MarkerLayerOptions(
                         markers: [
@@ -89,16 +91,13 @@ class MapView extends StatelessWidget {
                             onPressed: () => Provider.of<BottomSheetService>(
                                     context,
                                     listen: false)
-                                .showBottomSheet(MapsLibraryWidget()),
+                                .showBottomSheet(const MapsLibraryWidget()),
                             child: const Text('Karten'),
                           ),
                           Expanded(child: Container()),
                           MapsToggleButton(
                             callback: model.setMapView,
-                            label: Provider.of<MapService>(context)
-                                .currentMap
-                                .year
-                                .toString(),
+                            label: model.year,
                           ),
                         ],
                       ),
