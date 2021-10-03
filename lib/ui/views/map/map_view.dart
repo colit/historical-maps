@@ -4,11 +4,11 @@ import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/location_service.dart';
+import '../../../core/services/maps_service.dart';
 import '../../commons/map_icons.dart';
 import '../../commons/enums.dart';
 import '../../widgets/base_widget.dart';
-import '../../../core/services/location_service.dart';
-import '../../../core/services/maps_service.dart';
 import '../maps_library/map_library_widget.dart';
 import 'map_model.dart';
 import 'maps_toggle_button.dart';
@@ -98,6 +98,7 @@ class MapView extends StatelessWidget {
                           MapsToggleButton(
                             callback: model.setMapView,
                             label: model.year,
+                            initWithHistoricalMap: !model.showTodayMap,
                           ),
                         ],
                       ),

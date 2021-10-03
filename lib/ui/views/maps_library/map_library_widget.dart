@@ -17,10 +17,7 @@ class MapsLibraryWidget extends StatefulWidget {
 }
 
 class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
-  final controller = PageController(
-    viewportFraction: 0.35,
-    initialPage: 0,
-  );
+  late final PageController controller;
 
   void _animateToIndex(int itemIndex) {
     if (itemIndex != controller.page) {
@@ -30,6 +27,15 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
         curve: Curves.easeInOutCirc,
       );
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    controller = PageController(
+      viewportFraction: 0.35,
+      initialPage: Provider.of<MapService>(context).currentMapIndex,
+    );
+    super.didChangeDependencies();
   }
 
   @override
@@ -80,5 +86,11 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
             }),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

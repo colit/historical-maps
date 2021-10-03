@@ -12,7 +12,10 @@ class MapModel extends BaseModel {
       : _locationService = locationService,
         _mapService = mapService {
     _locationService.registerStreamListener(updateCurrentLocation);
-    _mapServiceListener = mapService.registerNotifyer((_) => notifyListeners());
+    _mapServiceListener = mapService.registerNotifyer((_) {
+      _showTodayMap = false;
+      notifyListeners();
+    });
   }
 
   bool _showTodayMap = false;

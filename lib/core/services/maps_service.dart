@@ -34,11 +34,11 @@ class MapService extends BaseService {
   })  : _databaseRepository = databaseRepository,
         _persistentRepository = persistentRepository {
     final reg = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+        _port.sendPort, AppConstants.downloaderSendPort);
     if (!reg) {
-      IsolateNameServer.removePortNameMapping('downloader_send_port');
+      IsolateNameServer.removePortNameMapping(AppConstants.downloaderSendPort);
       IsolateNameServer.registerPortWithName(
-          _port.sendPort, 'downloader_send_port');
+          _port.sendPort, AppConstants.downloaderSendPort);
     }
     _port.listen(_listener);
     FlutterDownloader.registerCallback(_downloadCallback);
@@ -53,9 +53,9 @@ class MapService extends BaseService {
 
   List<MapEntity> get maps => _maps;
 
-  void registerMap() {}
-
   MapEntity get currentMap => _currentMap;
+  int get currentMapIndex =>
+      _maps.indexOf(_maps.firstWhere((e) => e.id == _currentMap.id));
 
   final _loadingController = StreamController<LoadingValue>();
   Stream<LoadingValue> get loadingState => _loadingController.stream;
@@ -164,15 +164,16 @@ class MapService extends BaseService {
     final archive = ZipDecoder().decodeBytes(data);
 
     final localPath = await getApplicationDocumentsDirectory();
-    final pathToMap = '${localPath.path}/$fileName/';
+    final shortName = fileName.split('.').first;
+    final pathToMap = '${localPath.path}/$shortName/';
 
     final totalFiles = archive.where((e) => e.isFile).length;
     int counter = 0;
     for (final file in archive) {
-      final filename = file.name;
+      final name = file.name;
       if (file.isFile) {
         final data = file.content as List<int>;
-        final newFile = File(pathToMap + filename);
+        final newFile = File(pathToMap + name);
         await newFile.create(recursive: true);
         await newFile.writeAsBytes(data);
         counter++;
@@ -183,7 +184,7 @@ class MapService extends BaseService {
               value: counter / totalFiles),
         );
       } else {
-        final dir = pathToMap + filename;
+        final dir = pathToMap + name;
         Directory(dir).create(recursive: true);
       }
     }
@@ -193,7 +194,7 @@ class MapService extends BaseService {
   static void _downloadCallback(
       String id, DownloadTaskStatus status, int progress) {
     final SendPort? port =
-        IsolateNameServer.lookupPortByName('downloader_send_port');
+        IsolateNameServer.lookupPortByName(AppConstants.downloaderSendPort);
     port?.send([id, status, progress]);
   }
 }

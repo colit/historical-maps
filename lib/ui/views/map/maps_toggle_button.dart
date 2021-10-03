@@ -4,12 +4,14 @@ class MapsToggleButton extends StatefulWidget {
   const MapsToggleButton({
     Key? key,
     required this.label,
+    this.initWithHistoricalMap = true,
     Function(bool)? callback,
   })  : _callback = callback,
         super(key: key);
 
   final Function(bool)? _callback;
   final String label;
+  final bool initWithHistoricalMap;
 
   @override
   State<MapsToggleButton> createState() => _MapsToggleButtonState();
@@ -21,8 +23,6 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
   final double height = 40;
 
   late final widgetSize = Size(width + height, height);
-
-  bool isHistoricalMapVisible = true;
 
   late final _controller = AnimationController(
     duration: const Duration(milliseconds: 200),
@@ -39,14 +39,14 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
 
   @override
   Widget build(BuildContext context) {
+    final isHistoricalMapVisible = widget.initWithHistoricalMap;
+    _controller.animateTo(
+      isHistoricalMapVisible ? 0 : 1,
+      curve: isHistoricalMapVisible ? Curves.easeOut : Curves.easeIn,
+    );
     return GestureDetector(
       onTap: () {
-        isHistoricalMapVisible = !isHistoricalMapVisible;
-        widget._callback?.call(!isHistoricalMapVisible);
-        _controller.animateTo(
-          isHistoricalMapVisible ? 0 : 1,
-          curve: isHistoricalMapVisible ? Curves.easeOut : Curves.easeIn,
-        );
+        widget._callback?.call(isHistoricalMapVisible);
       },
       child: SizedOverflowBox(
         alignment: Alignment.topLeft,
