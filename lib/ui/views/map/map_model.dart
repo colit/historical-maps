@@ -35,7 +35,7 @@ class MapModel extends BaseModel {
   late MapController _mapController;
   MapController get mapController => _mapController;
 
-  String? get mapPath => _mapService.currentMap.path;
+  String? get mapPath => _mapService.currentMap.localPath;
 
   get year => _mapService.currentMap.year.toString();
 

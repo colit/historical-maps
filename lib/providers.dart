@@ -33,9 +33,11 @@ List<SingleChildWidget> independentServices = [
 ];
 
 List<SingleChildWidget> dependentServices = [
-  ProxyProvider<MongoDatabaseRepository, MapService>(
-    update: (_, databaseRepository, __) =>
-        MapService(databaseRepository: databaseRepository),
+  ProxyProvider2<MongoDatabaseRepository, PersistentRepository, MapService>(
+    update: (_, databaseRepository, persistentRepository, __) => MapService(
+      databaseRepository: databaseRepository,
+      persistentRepository: persistentRepository,
+    ),
   ),
   // ProxyProvider<DialogService, GeolocatorService>(
   //   update: (_, dialogService, __) =>

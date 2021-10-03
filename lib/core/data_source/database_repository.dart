@@ -1,5 +1,4 @@
 import 'package:graphql/client.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../exeptions/general_exeption.dart';
 import '../commons/graphql_queries.dart';

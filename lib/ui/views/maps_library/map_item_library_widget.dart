@@ -41,18 +41,13 @@ class MapLibraryItemWidget extends StatelessWidget {
               ),
               color: isSelected ? Colors.amber.withAlpha(100) : Colors.white,
             ),
-            if (isLoading && state.state == LoadingState.progress)
+            if (isLoading &&
+                (state.state == LoadingState.progress ||
+                    state.state == LoadingState.install))
               CircularProgressIndicator(value: state.value)
-            else if (isLoading && state.state == LoadingState.busy)
-              const CircularProgressIndicator(),
           ],
         );
       }),
     );
-    // Container(
-    //   alignment: Alignment.center,
-    //   child: Text(mapItem.year.toString()),
-    //   color: Colors.amber.withAlpha(100),
-    // );
   }
 }

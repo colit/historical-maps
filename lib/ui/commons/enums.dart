@@ -5,7 +5,7 @@ enum ViewState {
 
 enum LoadingState {
   idle,
-  busy,
+  install,
   progress,
 }
 

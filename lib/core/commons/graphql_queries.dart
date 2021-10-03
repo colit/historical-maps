@@ -18,7 +18,8 @@ class GraphQLQueries {
           node {
             objectId,
             name,
-            year
+            year,
+            file
           }
         }
       }
