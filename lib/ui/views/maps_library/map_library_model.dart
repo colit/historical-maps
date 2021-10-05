@@ -10,14 +10,18 @@ class MapLibraryModel extends BaseModel {
       {required MapService mapService, required DialogService dialogService})
       : _mapService = mapService,
         _dialogService = dialogService {
-    _mapServiceListenerId =
-        mapService.registerNotifyer((_) => notifyListeners());
+    _mapServiceListenerId = mapService.registerNotifyer((id) {
+      _loadingState[id] = true;
+      notifyListeners();
+    });
   }
 
   final MapService _mapService;
   final DialogService _dialogService;
 
   late int _mapServiceListenerId;
+
+  final Map<String, bool> _loadingState = {};
 
   List<MapEntity> get maps => _mapService.maps;
 
@@ -26,7 +30,7 @@ class MapLibraryModel extends BaseModel {
     if (selectedMap.id != _mapService.currentMap.id) {
       if (selectedMap.isInstalled) {
         _mapService.setCurrentMap(selectedMap);
-      } else {
+      } else if (_loadingState[selectedMap.id] ?? true) {
         _dialogService.showDialog(
           AlertMessage(
             title: 'Karte ist nicht installiert',
@@ -36,6 +40,7 @@ class MapLibraryModel extends BaseModel {
                   label: 'Ja',
                   action: () {
                     _mapService.loadMap(selectedMap);
+                    _loadingState[selectedMap.id] = false;
                   }),
               AlertAction(label: 'Nein')
             ],

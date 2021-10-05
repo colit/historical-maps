@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'package:historical_maps/core/commons/app_constants.dart';
 import 'package:historical_maps/core/entitles/loading_state_value.dart';
@@ -32,22 +30,12 @@ class MapService extends BaseService {
     required IDatabaseRepository databaseRepository,
     required IPersistentRepository persistentRepository,
   })  : _databaseRepository = databaseRepository,
-        _persistentRepository = persistentRepository {
-    final reg = IsolateNameServer.registerPortWithName(
-        _port.sendPort, AppConstants.downloaderSendPort);
-    if (!reg) {
-      IsolateNameServer.removePortNameMapping(AppConstants.downloaderSendPort);
-      IsolateNameServer.registerPortWithName(
-          _port.sendPort, AppConstants.downloaderSendPort);
-    }
-    _port.listen(_listener);
-    FlutterDownloader.registerCallback(_downloadCallback);
-  }
+        _persistentRepository = persistentRepository;
 
   final IDatabaseRepository _databaseRepository;
   final IPersistentRepository _persistentRepository;
 
-  final _port = ReceivePort();
+  // final _port = ReceivePort();
   late MapEntity _currentMap;
   List<MapEntity> _maps = [];
 
@@ -68,12 +56,12 @@ class MapService extends BaseService {
 
   void setCurrentMap(MapEntity selectedMap) {
     _currentMap = selectedMap;
-    notifyListeners();
+    notifyListeners(argument: selectedMap.id);
   }
 
   Future<void> initLocalMaps() async {
-    const mapId = 'MAP_1450';
-    const file = '1450.zip';
+    const mapId = AppConstants.initMapId;
+    const file = AppConstants.initMapFileName;
     String? localPath = await _persistentRepository.getString(mapId);
     if (localPath == null) {
       final bytes = await rootBundle.load('assets/maps/$file');
@@ -83,12 +71,18 @@ class MapService extends BaseService {
       await _persistentRepository.setString(mapId, localPath);
     }
     _currentMap = MapEntity(
-      id: 'MAP_1450',
-      name: 'Köln im Mittelalter',
+      id: AppConstants.initMapId,
+      name: AppConstants.initMapDescription,
       year: 1450,
       file: file,
       localPath: localPath,
       isRemovable: false,
+    );
+    _loadingController.add(
+      LoadingValue(
+        objectId: AppConstants.initMapId,
+        state: LoadingState.idle,
+      ),
     );
   }
 
@@ -102,61 +96,47 @@ class MapService extends BaseService {
 
   Future<void> loadMap(MapEntity selectedMap) async {
     final url = AppConstants.pathToMaps + selectedMap.file;
-    final temporaryPath = await getTemporaryDirectory();
-    final taskId = await FlutterDownloader.enqueue(
-      url: url,
-      savedDir: temporaryPath.path,
-      showNotification:
-          false, // show download progress in status bar (for Android)
-      openFileFromNotification:
-          false, // click on notification to open downloaded file (for Android)
-    );
-    if (taskId != null) {
-      _loadingTasks[taskId] = LoadingObject(temporaryPath.path, selectedMap);
-    }
-  }
+    print(':: MapService.loadMap :: url = $url');
+    var fileStream =
+        DefaultCacheManager().getFileStream(url, withProgress: true);
+    fileStream.listen((event) async {
+      switch (event.runtimeType) {
+        case DownloadProgress:
+          final progress = (event as DownloadProgress).progress ?? 0;
+          _loadingController.add(
+            LoadingValue(
+              objectId: selectedMap.id,
+              state: LoadingState.progress,
+              value: progress,
+            ),
+          );
+          break;
+        case FileInfo:
+          final file = (event as FileInfo).file;
+          print(':: MapService.loadMap :: ${file.basename} ready to unzip');
 
-  Future<void> _listener(dynamic data) async {
-    String taskId = data[0];
-    DownloadTaskStatus status = data[1];
-    int progress = data[2];
-    final loadingObject = _loadingTasks[taskId];
-    if (loadingObject != null) {
-      if (status == DownloadTaskStatus.running) {
-        _loadingController.add(
-          LoadingValue(
-            objectId: loadingObject.map.id,
-            state: LoadingState.progress,
-            value: progress / 100,
-          ),
-        );
-      } else if (status == DownloadTaskStatus.complete) {
-        _loadingController.add(
-          LoadingValue(
-            objectId: loadingObject.map.id,
-            state: LoadingState.install,
-          ),
-        );
-        final bytes = File(loadingObject.path).readAsBytesSync();
-        final localPath = await _extractFromArchive(
-            bytes, loadingObject.map.file, loadingObject.map.id);
-        await _persistentRepository.setString(loadingObject.map.id, localPath);
-        print('file saved to: $localPath');
-        _loadingController.add(
-          LoadingValue(
-            objectId: loadingObject.map.id,
-            state: LoadingState.idle,
-          ),
-        );
-        loadingObject.map.localPath = localPath;
-        _currentMap = loadingObject.map;
-        if (_currentMap.localPath != null) {
-          _persistentRepository.setString(
-              _currentMap.id, _currentMap.localPath!);
-        }
-        notifyListeners();
+          final bytes = await file.readAsBytes();
+          final localPath = await _extractFromArchive(
+              bytes, selectedMap.file, selectedMap.id);
+          await _persistentRepository.setString(selectedMap.id, localPath);
+          print('file saved to: $localPath');
+          _loadingController.add(
+            LoadingValue(
+              objectId: selectedMap.id,
+              state: LoadingState.idle,
+            ),
+          );
+          selectedMap.localPath = localPath;
+          _currentMap = selectedMap;
+          if (_currentMap.localPath != null) {
+            _persistentRepository.setString(
+                _currentMap.id, _currentMap.localPath!);
+          }
+          DefaultCacheManager().removeFile(file.basename);
+          notifyListeners(argument: selectedMap.id);
+          break;
       }
-    }
+    });
   }
 
   Future<String> _extractFromArchive(
@@ -191,10 +171,10 @@ class MapService extends BaseService {
     return pathToMap;
   }
 
-  static void _downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    final SendPort? port =
-        IsolateNameServer.lookupPortByName(AppConstants.downloaderSendPort);
-    port?.send([id, status, progress]);
-  }
+  // static void _downloadCallback(
+  //     String id, DownloadTaskStatus status, int progress) {
+  //   final SendPort? port =
+  //       IsolateNameServer.lookupPortByName(AppConstants.downloaderSendPort);
+  //   port?.send([id, status, progress]);
+  // }
 }

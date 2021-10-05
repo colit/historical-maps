@@ -81,6 +81,9 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
                 ],
               );
             }),

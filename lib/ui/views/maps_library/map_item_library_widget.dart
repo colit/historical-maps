@@ -23,12 +23,12 @@ class MapLibraryItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected =
         mapItem.id == Provider.of<MapService>(context).currentMap.id;
-    return GestureDetector(
-      onTap: () => _callback?.call(_index),
-      child: Consumer<LoadingValue>(builder: (context, state, child) {
-        final isLoading =
-            (state.objectId == mapItem.id && state.state != LoadingState.idle);
-        return Stack(
+    return Consumer<LoadingValue>(builder: (context, state, child) {
+      final isLoading =
+          (state.objectId == mapItem.id && state.state != LoadingState.idle);
+      return GestureDetector(
+        onTap: () => _callback?.call(_index),
+        child: Stack(
           alignment: Alignment.center,
           children: [
             Container(
@@ -46,8 +46,8 @@ class MapLibraryItemWidget extends StatelessWidget {
                     state.state == LoadingState.install))
               CircularProgressIndicator(value: state.value)
           ],
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 }
