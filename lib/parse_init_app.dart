@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/core/entitles/parse_image.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import 'core/commons/parse_const.dart';
@@ -13,6 +14,9 @@ class ParseInitApp extends StatelessWidget {
       future: Parse().initialize(
         ParseConstants.applicationId,
         ParseConstants.serverUrl,
+        registeredSubClassMap: <String, ParseObjectConstructor>{
+          'Image': () => ParseImage(),
+        },
       ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {

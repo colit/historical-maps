@@ -48,14 +48,13 @@ class MapService extends BaseService {
   final _loadingController = StreamController<LoadingValue>();
   Stream<LoadingValue> get loadingState => _loadingController.stream;
 
-  final Map<String, LoadingObject> _loadingTasks = {};
-
   String? get currentMapDataPath {
     return _currentMap.localPath;
   }
 
   void setCurrentMap(MapEntity selectedMap) {
     _currentMap = selectedMap;
+    _getImagesForMap(selectedMap.id);
     notifyListeners(argument: selectedMap.id);
   }
 
@@ -80,10 +79,11 @@ class MapService extends BaseService {
     );
     _loadingController.add(
       LoadingValue(
-        objectId: AppConstants.initMapId,
+        objectId: _currentMap.id,
         state: LoadingState.idle,
       ),
     );
+    _getImagesForMap(_currentMap.id);
   }
 
   Future<void> getMapsList() async {
@@ -96,7 +96,6 @@ class MapService extends BaseService {
 
   Future<void> loadMap(MapEntity selectedMap) async {
     final url = AppConstants.pathToMaps + selectedMap.file;
-    print(':: MapService.loadMap :: url = $url');
     var fileStream =
         DefaultCacheManager().getFileStream(url, withProgress: true);
     fileStream.listen((event) async {
@@ -113,13 +112,11 @@ class MapService extends BaseService {
           break;
         case FileInfo:
           final file = (event as FileInfo).file;
-          print(':: MapService.loadMap :: ${file.basename} ready to unzip');
 
           final bytes = await file.readAsBytes();
           final localPath = await _extractFromArchive(
               bytes, selectedMap.file, selectedMap.id);
           await _persistentRepository.setString(selectedMap.id, localPath);
-          print('file saved to: $localPath');
           _loadingController.add(
             LoadingValue(
               objectId: selectedMap.id,
@@ -134,6 +131,7 @@ class MapService extends BaseService {
           }
           DefaultCacheManager().removeFile(file.basename);
           notifyListeners(argument: selectedMap.id);
+          _getImagesForMap(selectedMap.id);
           break;
       }
     });
@@ -171,10 +169,8 @@ class MapService extends BaseService {
     return pathToMap;
   }
 
-  // static void _downloadCallback(
-  //     String id, DownloadTaskStatus status, int progress) {
-  //   final SendPort? port =
-  //       IsolateNameServer.lookupPortByName(AppConstants.downloaderSendPort);
-  //   port?.send([id, status, progress]);
-  // }
+  Future<void> _getImagesForMap(String id) async {
+    print('get photos for map $id');
+    final images = await _databaseRepository.getImagesForMap(id);
+  }
 }

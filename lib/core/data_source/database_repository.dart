@@ -1,4 +1,5 @@
 import 'package:graphql/client.dart';
+import 'package:historical_maps/core/entitles/image_entity.dart';
 
 import '../exeptions/general_exeption.dart';
 import '../commons/graphql_queries.dart';
@@ -57,5 +58,11 @@ class MongoDatabaseRepository implements IDatabaseRepository {
     }
 
     return url;
+  }
+
+  @override
+  Future<List<ImageEntity>> getImagesForMap(String id) async {
+    final output = <ImageEntity>[];
+    return output;
   }
 }
