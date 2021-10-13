@@ -66,18 +66,19 @@ class MapView extends StatelessWidget {
                               urlTemplate: "${model.mapPath}{z}/{x}/{y}.jpg",
                             ),
                       MarkerLayerOptions(
-                        markers: [
-                          if (model.currentLocation != null)
-                            Marker(
-                              width: 25.0,
-                              height: 25.0,
-                              point: model.currentLocation!,
-                              builder: (ctx) => CustomPaint(
-                                painter: PositionMarker(),
-                                size: const Size(40, 40),
-                              ),
-                            ),
-                        ],
+                        markers: model.markers,
+                        // ... [
+                        //   if (model.currentLocation != null)
+                        //     Marker(
+                        //       width: 25.0,
+                        //       height: 25.0,
+                        //       point: model.currentLocation!,
+                        //       builder: (ctx) => CustomPaint(
+                        //         painter: PositionMarker(),
+                        //         size: const Size(40, 40),
+                        //       ),
+                        //     ),
+                        // ],
                       ),
                     ],
                   ),

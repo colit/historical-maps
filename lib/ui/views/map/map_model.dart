@@ -3,6 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:historical_maps/core/services/location_service.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
 import 'package:historical_maps/ui/view_models/base_model.dart';
+import 'package:historical_maps/ui/views/map/image_marker.dart';
+import 'package:historical_maps/ui/widgets/image_marker_widget.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapModel extends BaseModel {
@@ -14,6 +16,7 @@ class MapModel extends BaseModel {
     _locationService.registerStreamListener(updateCurrentLocation);
     _mapServiceListener = mapService.registerNotifyer((_) {
       _showTodayMap = false;
+      _updateImagesOnMap();
       notifyListeners();
     });
   }
@@ -25,6 +28,9 @@ class MapModel extends BaseModel {
   final MapService _mapService;
 
   late int _mapServiceListener;
+
+  List<Marker> _markers = [];
+  List<Marker> get markers => _showTodayMap ? [] : _markers;
 
   Position? _currentLocation;
   LatLng? get currentLocation {
@@ -49,6 +55,7 @@ class MapModel extends BaseModel {
 
   registerController(MapController mapController) {
     _mapController = mapController;
+    _updateImagesOnMap();
   }
 
   void updateCurrentLocation(currentLocation) {
@@ -75,5 +82,20 @@ class MapModel extends BaseModel {
     _locationService.pauseStreamListener();
     _mapService.disposeListener(_mapServiceListener);
     super.dispose();
+  }
+
+  void _updateImagesOnMap() {
+    final images = _mapService.imagesOnMap;
+    _markers = images
+        .map(
+          (image) => ImageMarker(
+            anchorPos: AnchorPos.align(AnchorAlign.center),
+            height: 34,
+            width: 34,
+            image: image,
+            builder: (_) => const ImageMarkerWidget(),
+          ),
+        )
+        .toList(growable: false);
   }
 }

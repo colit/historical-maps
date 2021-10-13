@@ -1,5 +1,7 @@
 import 'package:graphql/client.dart';
 import 'package:historical_maps/core/entitles/image_entity.dart';
+import 'package:historical_maps/core/entitles/parse_image.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../exeptions/general_exeption.dart';
 import '../commons/graphql_queries.dart';
@@ -63,6 +65,26 @@ class MongoDatabaseRepository implements IDatabaseRepository {
   @override
   Future<List<ImageEntity>> getImagesForMap(String id) async {
     final output = <ImageEntity>[];
+    // var imagesForMap = QueryBuilder<ParseImage>(ParseImage());
+
+    final queryMap = QueryBuilder<ParseObject>(ParseObject('Map'))
+      ..whereEqualTo('objectId', id);
+
+    final queryImage = QueryBuilder<ParseImage>(ParseImage())
+      ..whereMatchesQuery('map', queryMap);
+
+    final response = await queryImage.query();
+
+    // final response = await ParseImage().getAll();
+
+    if (response.success) {
+      final results = response.result;
+      if (results != null) {
+        for (final ParseImage result in results) {
+          output.add(ImageEntity.fromMap(result.map));
+        }
+      }
+    }
     return output;
   }
 }

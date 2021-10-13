@@ -10,6 +10,8 @@ class ImageEntity {
   static const keyAuthorURL = 'authorURL';
   static const keyLicense = 'license';
   static const keyLicenseURL = 'licenseURL';
+  static const keySource = 'source';
+  static const keySourceURL = 'sourceURL';
   static const keyImage = 'image';
 
   ImageEntity({
@@ -40,4 +42,20 @@ class ImageEntity {
   final String source;
   final String sourceURL;
   final String imageURL;
+
+  factory ImageEntity.fromMap(Map<String, dynamic> map) => ImageEntity(
+        id: map[keyObjectId],
+        latitude: map[keyLatitude],
+        longitude: map[keyLongitude],
+        imageURL: 'imageURL',
+        published: map[keyPublished],
+        tilte: map[keyTitle],
+        description: map[keyDescription],
+        author: map[keyAuthor],
+        authorURL: map[keyAuthorURL],
+        license: map[keyLicense],
+        licenseURL: map[keyLicenseURL],
+        source: map[keySource],
+        sourceURL: map[keySourceURL],
+      );
 }

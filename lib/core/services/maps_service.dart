@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:historical_maps/core/entitles/image_entity.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:historical_maps/core/commons/app_constants.dart';
@@ -38,8 +39,10 @@ class MapService extends BaseService {
   // final _port = ReceivePort();
   late MapEntity _currentMap;
   List<MapEntity> _maps = [];
+  List<ImageEntity> _imagesOnMap = [];
 
   List<MapEntity> get maps => _maps;
+  List<ImageEntity> get imagesOnMap => _imagesOnMap;
 
   MapEntity get currentMap => _currentMap;
   int get currentMapIndex =>
@@ -170,7 +173,8 @@ class MapService extends BaseService {
   }
 
   Future<void> _getImagesForMap(String id) async {
-    print('get photos for map $id');
-    final images = await _databaseRepository.getImagesForMap(id);
+    _imagesOnMap = [];
+    _imagesOnMap = await _databaseRepository.getImagesForMap(id);
+    notifyListeners(argument: id);
   }
 }

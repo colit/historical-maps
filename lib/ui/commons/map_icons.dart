@@ -5,7 +5,12 @@ class MapIcons {
 
   static const _kFontFamily = 'MapIcons';
 
-  static const IconData iconDom = IconData(0xe900, fontFamily: _kFontFamily);
-  static const IconData iconCoatOfArms =
-      IconData(0xe901, fontFamily: _kFontFamily);
+  static const IconData iconDom = IconData(
+    0xe900,
+    fontFamily: _kFontFamily,
+  );
+  static const IconData iconImage = IconData(
+    0xe901,
+    fontFamily: _kFontFamily,
+  );
 }

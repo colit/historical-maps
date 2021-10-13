@@ -14,6 +14,8 @@ class ParseInitApp extends StatelessWidget {
       future: Parse().initialize(
         ParseConstants.applicationId,
         ParseConstants.serverUrl,
+        masterKey: ParseConstants.parseMasterKey,
+        clientKey: ParseConstants.clientKey,
         registeredSubClassMap: <String, ParseObjectConstructor>{
           'Image': () => ParseImage(),
         },
