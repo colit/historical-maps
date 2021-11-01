@@ -1,3 +1,5 @@
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+
 class ImageEntity {
   static const keyObjectId = 'objectId';
   static const keyMap = 'map';
@@ -18,40 +20,40 @@ class ImageEntity {
     required this.id,
     required this.latitude,
     required this.longitude,
-    required this.imageURL,
-    this.published = 1900,
-    this.tilte = '',
-    this.description = '',
-    this.author = '',
-    this.authorURL = '',
-    this.license = '',
-    this.licenseURL = '',
-    this.source = '',
-    this.sourceURL = '',
+    required this.file,
+    this.yearPublished = 1900,
+    this.title,
+    this.description,
+    this.author,
+    this.authorURL,
+    this.license,
+    this.licenseURL,
+    this.source,
+    this.sourceURL,
   });
   final String id;
-  final int published;
-  final String tilte;
-  final String description;
+  final ParseFile file;
+  final int? yearPublished;
+  final String? title;
+  final String? description;
   final double latitude;
   final double longitude;
-  final String author;
-  final String authorURL;
-  final String license;
-  final String licenseURL;
-  final String source;
-  final String sourceURL;
-  final String imageURL;
+  final String? author;
+  final String? authorURL;
+  final String? license;
+  final String? licenseURL;
+  final String? source;
+  final String? sourceURL;
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) => ImageEntity(
         id: map[keyObjectId],
         latitude: map[keyLatitude],
         longitude: map[keyLongitude],
-        imageURL: 'imageURL',
-        published: map[keyPublished],
-        tilte: map[keyTitle],
+        file: map['file'],
+        yearPublished: map[keyPublished],
+        title: map[keyTitle],
         description: map[keyDescription],
-        author: map[keyAuthor],
+        author: map[keyAuthor] ?? 'Unbekannt',
         authorURL: map[keyAuthorURL],
         license: map[keyLicense],
         licenseURL: map[keyLicenseURL],

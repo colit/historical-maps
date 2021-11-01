@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:historical_maps/core/commons/parse_const.dart';
 import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
 import 'package:historical_maps/ui/commons/colors.dart';
@@ -81,35 +82,20 @@ class MapView extends StatelessWidget {
                     ),
                     layers: [
                       TileLayerOptions(
+                        backgroundColor: Colors.white,
                         urlTemplate:
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: ['a', 'b', 'c'],
                         wmsOptions: model.showTodayMap
                             ? null
                             : WMSTileLayerOptions(
-                                format: 'image/png',
-                                baseUrl:
-                                    'https://www.opendem.info/geoserver/histo/wms?',
-                                layers: [
-                                  model.mapReference,
-                                ],
+                                baseUrl: ParseConstants.geoServerURL,
+                                layers: [model.mapReference],
                               ),
                       ),
                       MarkerLayerOptions(
                         markers: model.markers,
                         rotate: true,
-                        // ... [
-                        //   if (model.currentLocation != null)
-                        //     Marker(
-                        //       width: 25.0,
-                        //       height: 25.0,
-                        //       point: model.currentLocation!,
-                        //       builder: (ctx) => CustomPaint(
-                        //         painter: PositionMarker(),
-                        //         size: const Size(40, 40),
-                        //       ),
-                        //     ),
-                        // ],
                       ),
                     ],
                   ),

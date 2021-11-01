@@ -7,4 +7,5 @@ class ParseConstants {
   static const applicationId = 'YOUR APP ID';
   static const parseMasterKey = 'YOUR MASTER KEY';
   static const clientKey = 'YOUR CLIENT KEY';
+  static const geoServerURL = 'GEOSERVER URL';
 }
