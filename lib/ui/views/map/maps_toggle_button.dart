@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/ui/commons/colors.dart';
 
 class MapsToggleButton extends StatefulWidget {
   const MapsToggleButton({
@@ -59,7 +60,7 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
             child: Container(
               height: height,
               width: 2 * width + height,
-              color: Colors.blue,
+              color: kColorMainRed,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -78,8 +79,10 @@ class _MapsToggleButtonState extends State<MapsToggleButton>
                     height: height,
                     width: height,
                     decoration: BoxDecoration(
+                      border: const Border.fromBorderSide(
+                          BorderSide(width: 4, color: kColorMainRed)),
                       borderRadius: BorderRadius.circular(height / 2),
-                      color: Colors.redAccent,
+                      color: Colors.white,
                     ),
                   ),
                   Container(

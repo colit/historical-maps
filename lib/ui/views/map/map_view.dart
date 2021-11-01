@@ -6,7 +6,6 @@ import 'package:historical_maps/core/services/shell_state_service.dart';
 import 'package:historical_maps/ui/commons/colors.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-// import 'package:proj4dart/proj4dart.dart' as proj4;
 
 import '../../../core/services/location_service.dart';
 import '../../../core/services/maps_service.dart';
@@ -22,26 +21,6 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var resolutions = <double>[
-      32768,
-      16384,
-      8192,
-      4096,
-      2048,
-      1024,
-      512,
-      256,
-      128
-    ];
-    var maxZoom = (resolutions.length - 1).toDouble();
-
-    // var epsg3413CRS = Proj4Crs.fromFactory(
-    //   code: 'EPSG:3413',
-    //   proj4Projection: proj4.Projection.add('EPSG:3413',
-    //       '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'),
-    //   resolutions: resolutions,
-    // );
-
     return BaseWidget<MapModel>(
       model: MapModel(
         locationService: Provider.of<LocationService>(context),
@@ -105,6 +84,15 @@ class MapView extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: MapsToggleButton(
+                              callback: model.setMapView,
+                              label: model.year,
+                              initWithHistoricalMap: !model.showTodayMap,
+                            ),
+                          ),
+                          Expanded(child: Container()),
                           InkWell(
                             onTap: () => Provider.of<BottomSheetService>(
                                     context,
@@ -115,8 +103,8 @@ class MapView extends StatelessWidget {
                               decoration: const BoxDecoration(
                                 color: kColorMainRed,
                                 borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
                                 ),
                               ),
                               child: const Padding(
@@ -127,22 +115,6 @@ class MapView extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ),
-                          // ElevatedButton(
-                          //   onPressed: () => Provider.of<BottomSheetService>(
-                          //           context,
-                          //           listen: false)
-                          //       .showBottomSheet(const MapsLibraryWidget()),
-                          //   child: const Text('Karten'),
-                          // ),
-                          Expanded(child: Container()),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: MapsToggleButton(
-                              callback: model.setMapView,
-                              label: model.year,
-                              initWithHistoricalMap: !model.showTodayMap,
                             ),
                           ),
                         ],
