@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/ui/commons/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:historical_maps/core/entitles/shell_state.dart';
 import 'package:historical_maps/ui/view_models/bottom_navigation_model.dart';
@@ -60,11 +61,14 @@ class _AppShellState extends State<AppShell> {
         backButtonDispatcher: _backButtonDispatcher,
       ),
       bottomNavigationBar: Consumer<ShellState>(
-        builder: (context, value, child) => BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: model.navigationItems,
-          currentIndex: value.currentShellIndex!,
-          onTap: (index) => model.onItemTapped(index),
+        builder: (context, value, child) => Container(
+          decoration: const BoxDecoration(gradient: kGradientNavigation),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: model.navigationItems,
+            currentIndex: value.currentShellIndex!,
+            onTap: (index) => model.onItemTapped(index),
+          ),
         ),
       ),
     );

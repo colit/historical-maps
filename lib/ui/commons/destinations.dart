@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/ui/commons/map_icons.dart';
 import '../navigator/destination.dart';
 
 import 'enums.dart';
@@ -7,7 +8,7 @@ List<Destination> kDestinations = <Destination>[
   Destination(
     index: 0,
     icon: const Icon(
-      Icons.map,
+      MapIcons.map,
       size: 38,
     ),
     pageType: PageType.map,
@@ -15,7 +16,7 @@ List<Destination> kDestinations = <Destination>[
   Destination(
     index: 1,
     icon: const Icon(
-      Icons.info,
+      MapIcons.info,
       size: 38,
     ),
     pageType: PageType.notes,

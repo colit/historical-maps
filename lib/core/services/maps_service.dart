@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:archive/archive.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:historical_maps/core/entitles/image_entity.dart';
+import 'package:historical_maps/core/entitles/map_referece.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:historical_maps/core/commons/app_constants.dart';
@@ -37,108 +38,114 @@ class MapService extends BaseService {
   final IPersistentRepository _persistentRepository;
 
   // final _port = ReceivePort();
-  late MapEntity _currentMap;
-  List<MapEntity> _maps = [];
+  late MapReference _currentMap;
+  List<MapReference> _maps = [];
   List<ImageEntity> _imagesOnMap = [];
 
-  List<MapEntity> get maps => _maps;
+  List<MapReference> get maps => _maps;
   List<ImageEntity> get imagesOnMap => _imagesOnMap;
 
-  MapEntity get currentMap => _currentMap;
+  MapReference get currentMap => _currentMap;
   int get currentMapIndex =>
       _maps.indexOf(_maps.firstWhere((e) => e.id == _currentMap.id));
 
   final _loadingController = StreamController<LoadingValue>();
   Stream<LoadingValue> get loadingState => _loadingController.stream;
 
-  String? get currentMapDataPath {
-    return _currentMap.localPath;
+  String? get currentMapKey {
+    return _currentMap.key;
   }
 
-  void setCurrentMap(MapEntity selectedMap) {
+  void setCurrentMap(MapReference selectedMap) {
     _currentMap = selectedMap;
     _getImagesForMap(selectedMap.id);
     notifyListeners(argument: selectedMap.id);
   }
 
-  Future<void> initLocalMaps() async {
-    const mapId = AppConstants.initMapId;
-    const file = AppConstants.initMapFileName;
-    String? localPath = await _persistentRepository.getString(mapId);
-    if (localPath == null) {
-      final bytes = await rootBundle.load('assets/maps/$file');
-      final data =
-          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
-      localPath = await _extractFromArchive(data, file, mapId);
-      await _persistentRepository.setString(mapId, localPath);
-    }
-    _currentMap = MapEntity(
-      id: AppConstants.initMapId,
-      name: AppConstants.initMapDescription,
-      year: 1450,
-      file: file,
-      localPath: localPath,
-      isRemovable: false,
-    );
-    _loadingController.add(
-      LoadingValue(
-        objectId: _currentMap.id,
-        state: LoadingState.idle,
-      ),
-    );
-    _getImagesForMap(_currentMap.id);
+  // Future<void> initLocalMaps() async {
+  //   const mapId = AppConstants.initMapId;
+  //   const file = AppConstants.initMapFileName;
+  //   String? localPath = await _persistentRepository.getString(mapId);
+  //   if (localPath == null) {
+  //     final bytes = await rootBundle.load('assets/maps/$file');
+  //     final data =
+  //         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+  //     localPath = await _extractFromArchive(data, file, mapId);
+  //     await _persistentRepository.setString(mapId, localPath);
+  //   }
+  //   _currentMap = MapEntity(
+  //     id: AppConstants.initMapId,
+  //     name: AppConstants.initMapDescription,
+  //     year: 1450,
+  //     file: file,
+  //     localPath: localPath,
+  //     isRemovable: false,
+  //   );
+  //   _loadingController.add(
+  //     LoadingValue(
+  //       objectId: _currentMap.id,
+  //       state: LoadingState.idle,
+  //     ),
+  //   );
+  //   _getImagesForMap(_currentMap.id);
+  // }
+
+  Future<void> getGeoserverMaps() async {
+    _maps = await _databaseRepository.getMapReferences();
+    _maps.sort((m1, m2) => m1.year.compareTo(m2.year));
+    setCurrentMap(_maps.first);
   }
 
-  Future<void> getMapsList() async {
-    final maps = await _databaseRepository.getMaps();
-    for (final map in maps) {
-      map.localPath = await _persistentRepository.getString(map.id);
-    }
-    _maps = [_currentMap, ...maps];
-  }
+  // Future<void> getMapsList() async {
+  //   final maps = await _databaseRepository.getMaps();
+  //   for (final map in maps) {
+  //     map.localPath = await _persistentRepository.getString(map.id);
+  //   }
+  //   _maps = [_currentMap, ...maps];
+  // }
 
-  Future<void> loadMap(MapEntity selectedMap) async {
-    final url = AppConstants.pathToMaps + selectedMap.file;
-    var fileStream =
-        DefaultCacheManager().getFileStream(url, withProgress: true);
-    fileStream.listen((event) async {
-      switch (event.runtimeType) {
-        case DownloadProgress:
-          final progress = (event as DownloadProgress).progress ?? 0;
-          _loadingController.add(
-            LoadingValue(
-              objectId: selectedMap.id,
-              state: LoadingState.progress,
-              value: progress,
-            ),
-          );
-          break;
-        case FileInfo:
-          final file = (event as FileInfo).file;
+  // Future<void> loadMap(MapEntity selectedMap) async {
+  //   final url = AppConstants.pathToMaps + selectedMap.file;
+  //   var fileStream =
+  //       DefaultCacheManager().getFileStream(url, withProgress: true);
+  //   fileStream.listen((event) async {
+  //     switch (event.runtimeType) {
+  //       case DownloadProgress:
+  //         final progress = (event as DownloadProgress).progress ?? 0;
+  //         _loadingController.add(
+  //           LoadingValue(
+  //             objectId: selectedMap.id,
+  //             state: LoadingState.progress,
+  //             value: progress,
+  //           ),
+  //         );
+  //         break;
+  //       case FileInfo:
+  //         final file = (event as FileInfo).file;
 
-          final bytes = await file.readAsBytes();
-          final localPath = await _extractFromArchive(
-              bytes, selectedMap.file, selectedMap.id);
-          await _persistentRepository.setString(selectedMap.id, localPath);
-          _loadingController.add(
-            LoadingValue(
-              objectId: selectedMap.id,
-              state: LoadingState.idle,
-            ),
-          );
-          selectedMap.localPath = localPath;
-          _currentMap = selectedMap;
-          if (_currentMap.localPath != null) {
-            _persistentRepository.setString(
-                _currentMap.id, _currentMap.localPath!);
-          }
-          DefaultCacheManager().removeFile(file.basename);
-          notifyListeners(argument: selectedMap.id);
-          _getImagesForMap(selectedMap.id);
-          break;
-      }
-    });
-  }
+  //         final bytes = await file.readAsBytes();
+  //         final localPath = await _extractFromArchive(
+  //             bytes, selectedMap.file, selectedMap.id);
+  //         await _persistentRepository.setString(selectedMap.id, localPath);
+  //         _loadingController.add(
+  //           LoadingValue(
+  //             objectId: selectedMap.id,
+  //             state: LoadingState.idle,
+  //           ),
+  //         );
+  //         selectedMap.localPath = localPath;
+  //         _currentMap = selectedMap;
+  //         if (_currentMap.localPath != null) {
+  //           _persistentRepository.setString(
+  //               _currentMap.id, _currentMap.localPath!);
+  //         }
+  //         DefaultCacheManager().removeFile(file.basename);
+  //         notifyListeners(argument: selectedMap.id);
+  //         _getImagesForMap(selectedMap.id);
+  //         break;
+  //     }
+  //   });
+  // }
 
   Future<String> _extractFromArchive(
       Uint8List data, String fileName, String mapId) async {
@@ -172,9 +179,14 @@ class MapService extends BaseService {
     return pathToMap;
   }
 
-  Future<void> _getImagesForMap(String id) async {
+  Future<void> _getImagesForMap(String mapId) async {
     _imagesOnMap = [];
-    _imagesOnMap = await _databaseRepository.getImagesForMap(id);
-    notifyListeners(argument: id);
+    _imagesOnMap = await _databaseRepository.getImagesForMap(mapId);
+    notifyListeners(argument: mapId);
+  }
+
+  Future<ImageEntity?> getImageForId(String imageId) async {
+    final image = await _databaseRepository.getImageForId(imageId);
+    return image;
   }
 }

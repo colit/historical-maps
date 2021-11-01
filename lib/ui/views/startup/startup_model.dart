@@ -1,3 +1,4 @@
+import 'package:historical_maps/core/exeptions/general_exeption.dart';
 import 'package:historical_maps/core/services/location_service.dart';
 
 import '../../../core/services/maps_service.dart';
@@ -19,11 +20,15 @@ class StartupModel extends BaseModel {
   final LocationService _locationService;
 
   Future<void> initStartupState() async {
-    await _mapService.initLocalMaps();
-    await _mapService.getMapsList();
-
-    _startupStateService.showPage(await _locationService.isEnabled
-        ? PageType.shell
-        : PageType.locationRequest);
+    // await _mapService.initLocalMaps();
+    try {
+      await _mapService.getGeoserverMaps();
+      _startupStateService.showPage(await _locationService.isEnabled
+          ? PageType.shell
+          : PageType.locationRequest);
+    } on GeneralExeption catch (e) {
+      print(e.title);
+      print(e.message);
+    }
   }
 }

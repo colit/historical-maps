@@ -18,4 +18,5 @@ enum PageType {
   map,
   notes,
   info,
+  photoDetails,
 }

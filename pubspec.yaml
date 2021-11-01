@@ -38,6 +38,7 @@ dependencies:
   shared_preferences: ^2.0.8
   flutter_cache_manager: ^3.1.2
   latlong2: ^0.8.1
+  proj4dart: ^2.0.0
 
 
 dev_dependencies:

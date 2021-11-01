@@ -2,6 +2,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:historical_maps/core/services/location_service.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
+import 'package:historical_maps/core/services/shell_state_service.dart';
+import 'package:historical_maps/ui/commons/enums.dart';
 import 'package:historical_maps/ui/view_models/base_model.dart';
 import 'package:historical_maps/ui/views/map/image_marker.dart';
 import 'package:historical_maps/ui/widgets/image_marker_widget.dart';
@@ -10,9 +12,11 @@ import 'package:latlong2/latlong.dart';
 class MapModel extends BaseModel {
   MapModel(
       {required LocationService locationService,
-      required MapService mapService})
+      required MapService mapService,
+      required ShellStateService shellStateService})
       : _locationService = locationService,
-        _mapService = mapService {
+        _mapService = mapService,
+        _shellStateService = shellStateService {
     _locationService.registerStreamListener(updateCurrentLocation);
     _mapServiceListener = mapService.registerNotifyer((_) {
       _showTodayMap = false;
@@ -26,6 +30,7 @@ class MapModel extends BaseModel {
 
   final LocationService _locationService;
   final MapService _mapService;
+  final ShellStateService _shellStateService;
 
   late int _mapServiceListener;
 
@@ -44,7 +49,7 @@ class MapModel extends BaseModel {
   late MapController _mapController;
   MapController get mapController => _mapController;
 
-  String? get mapPath => _mapService.currentMap.localPath;
+  String get mapReference => _mapService.currentMap.reference;
 
   get year => _mapService.currentMap.year.toString();
 
@@ -93,7 +98,11 @@ class MapModel extends BaseModel {
             height: 34,
             width: 34,
             image: image,
-            builder: (_) => const ImageMarkerWidget(),
+            builder: (_) => ImageMarkerWidget(
+              id: image.id,
+              callback: (id) => _shellStateService
+                  .pushPage(PageType.photoDetails, arguments: [id]),
+            ),
           ),
         )
         .toList(growable: false);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/ui/views/photo_details/photo_details_view.dart';
 
 import '../views/infos.dart';
 import '../views/location_request/location_request_view.dart';
@@ -78,6 +79,14 @@ class PageCreator {
         output = MaterialPage(
           key: appPage.key as LocalKey?,
           child: const InfosView(),
+        );
+        break;
+      case PageType.photoDetails:
+        output = MaterialPage(
+          key: appPage.key as LocalKey?,
+          child: PhotoDetailsView(
+            imageId: arguments?.first,
+          ),
         );
         break;
 

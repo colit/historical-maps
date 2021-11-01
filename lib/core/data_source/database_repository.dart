@@ -1,8 +1,9 @@
 import 'package:graphql/client.dart';
-import 'package:historical_maps/core/entitles/image_entity.dart';
-import 'package:historical_maps/core/entitles/parse_image.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
+import '../entitles/image_entity.dart';
+import '../entitles/map_referece.dart';
+import '../entitles/parse_image.dart';
 import '../exeptions/general_exeption.dart';
 import '../commons/graphql_queries.dart';
 import '../entitles/map_entity.dart';
@@ -16,6 +17,27 @@ class MongoDatabaseRepository implements IDatabaseRepository {
       link: HttpLink(GraphQLQueries.graphqlAPI,
           defaultHeaders: GraphQLQueries.graphQLHeader),
     );
+  }
+
+  @override
+  Future<List<MapReference>> getMapReferences() async {
+    var output = <MapReference>[];
+
+    final options = QueryOptions(
+      document: gql(GraphQLQueries.getMapReferences),
+    );
+
+    final result = await client.query(options);
+
+    if (result.hasException) {
+      throw GeneralExeption(
+          title: 'graphQL Exception', message: result.exception.toString());
+    } else {
+      output = List<MapReference>.from(result.data?['mapReferences']['edges']
+          .map((node) => MapReference.fromGraphQL(node['node'])));
+    }
+
+    return output;
   }
 
   @override
@@ -67,7 +89,7 @@ class MongoDatabaseRepository implements IDatabaseRepository {
     final output = <ImageEntity>[];
     // var imagesForMap = QueryBuilder<ParseImage>(ParseImage());
 
-    final queryMap = QueryBuilder<ParseObject>(ParseObject('Map'))
+    final queryMap = QueryBuilder<ParseObject>(ParseObject('MapReference'))
       ..whereEqualTo('objectId', id);
 
     final queryImage = QueryBuilder<ParseImage>(ParseImage())
@@ -85,6 +107,22 @@ class MongoDatabaseRepository implements IDatabaseRepository {
         }
       }
     }
+    return output;
+  }
+
+  @override
+  Future<ImageEntity?> getImageForId(String imageId) async {
+    ImageEntity? output;
+    final queryImage = QueryBuilder<ParseImage>(ParseImage())
+      ..whereEqualTo(ImageEntity.keyObjectId, imageId);
+    final response = await queryImage.query();
+    if (response.success) {
+      final results = response.results;
+      if (results != null) {
+        output = ImageEntity.fromMap((results.first as ParseImage).map);
+      }
+    }
+
     return output;
   }
 }

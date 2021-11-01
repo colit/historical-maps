@@ -22,17 +22,7 @@ class HistoricalMapsApp extends StatelessWidget {
       child: Builder(
         builder: (context) => MaterialApp.router(
           title: 'Historische Kölner Stadtkarten',
-          theme: ThemeData(
-            primaryColor: kColorBackgroundDark,
-            textTheme: const TextTheme(
-              headline1: TextStyle(fontSize: 40, color: Colors.red),
-            ),
-            tabBarTheme: const TabBarTheme(
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2, color: Colors.white)),
-            ),
-          ),
+          theme: themeData,
           routerDelegate: AppRouterDelegate(),
           routeInformationParser: AppRouteInformationParser(),
         ),

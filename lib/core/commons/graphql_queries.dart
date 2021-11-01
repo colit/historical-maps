@@ -26,6 +26,21 @@ class GraphQLQueries {
     }
   ''';
 
+  static const getMapReferences = r'''
+    query getMapReferences{
+      mapReferences {
+        edges {
+          node {
+            objectId,
+            key,
+            year,
+            name
+          }
+        }
+      }
+    }
+  ''';
+
   static const getMapUrlforId = r'''
     query getMapUrlforId($mapId: ID!) {
       map(id: $mapId) {

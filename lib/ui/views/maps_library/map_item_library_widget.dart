@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:historical_maps/core/entitles/loading_state_value.dart';
+import 'package:historical_maps/core/entitles/map_referece.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
 import 'package:historical_maps/ui/commons/enums.dart';
 import 'package:provider/provider.dart';
-import '../../../core/entitles/map_entity.dart';
 
 class MapLibraryItemWidget extends StatelessWidget {
   const MapLibraryItemWidget({
@@ -15,7 +15,7 @@ class MapLibraryItemWidget extends StatelessWidget {
         _index = index,
         super(key: key);
 
-  final MapEntity mapItem;
+  final MapReference mapItem;
   final Function(int)? _callback;
   final int _index;
 
@@ -35,8 +35,8 @@ class MapLibraryItemWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 mapItem.year.toString(),
-                style: TextStyle(
-                  color: mapItem.isInstalled ? Colors.black : Colors.redAccent,
+                style: const TextStyle(
+                  color: Colors.black,
                 ),
               ),
               color: isSelected ? Colors.amber.withAlpha(100) : Colors.white,
