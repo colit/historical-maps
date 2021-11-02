@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+
+import '../commons/map_constants.dart';
 
 class LocationService {
   StreamSubscription<Position>? _positionStreamSubscription;
@@ -13,6 +16,11 @@ class LocationService {
   Position? _currentPosition;
 
   Position? get currentLocation => _currentPosition;
+
+  LatLng _currentMapCenter = MapConstants.initPosition;
+  double _currentMapZoom = MapConstants.initZoom;
+  LatLng get currentMapCenter => _currentMapCenter;
+  double get currentMapZoom => _currentMapZoom;
 
   Future<bool> get isEnabled async {
     final serviceEnebled = await Geolocator.isLocationServiceEnabled();
@@ -58,5 +66,10 @@ class LocationService {
     _currentPosition = position;
     _positionStreamController.add(position);
     _callbackLocationUpdate?.call(position);
+  }
+
+  void saveMapState(LatLng? center, double? zoom) {
+    _currentMapCenter = center ?? MapConstants.initPosition;
+    _currentMapZoom = zoom ?? MapConstants.initZoom;
   }
 }

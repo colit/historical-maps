@@ -42,20 +42,19 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.only(top: 30, bottom: 15),
+        padding: const EdgeInsets.only(bottom: 15),
         child: BaseWidget<MapLibraryModel>(
-            model: MapLibraryModel(
-                mapService: Provider.of<MapService>(context),
-                dialogService: Provider.of<DialogService>(context)),
+            model:
+                MapLibraryModel(mapService: Provider.of<MapService>(context)),
             builder: (_, model, __) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
-                      'Historische Kölner Stadkarten',
+                      model.mapInFocus,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -69,7 +68,7 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
                       controller: controller,
                       itemCount: model.maps.length,
                       onPageChanged: (index) {
-                        // some actions on page change...
+                        model.setMapInFocus(index);
                       },
                       itemBuilder: (context, index) => MapLibraryItemWidget(
                         index: index,

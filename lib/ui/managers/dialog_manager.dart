@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:historical_maps/ui/commons/colors.dart';
 import '../../core/entitles/alert_message.dart';
 import '../../core/services/bottom_sheet_service.dart';
 import '../../core/services/dialog_service.dart';
@@ -47,7 +48,30 @@ class _DialogManagerState extends State<DialogManager> {
       enableDrag: false,
       builder: (context) => Wrap(
         children: [
-          child,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: kColorBackgroundMiddle,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              child,
+            ],
+          ),
         ],
       ),
       shape: const RoundedRectangleBorder(

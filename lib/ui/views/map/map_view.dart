@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:historical_maps/core/commons/parse_const.dart';
 import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
@@ -54,27 +55,38 @@ class MapView extends StatelessWidget {
                   FlutterMap(
                     mapController: model.mapController,
                     options: MapOptions(
-                      center: LatLng(50.9383, 6.9581),
-                      zoom: 16.0,
+                      center: model.currentCenter,
+                      zoom: model.currentZoom,
                       minZoom: 13.0,
                       maxZoom: 18.0,
+                      onPositionChanged: (position, __) =>
+                          model.updateMapPosition(position),
                     ),
-                    layers: [
-                      TileLayerOptions(
-                        backgroundColor: Colors.white,
-                        urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'],
-                        wmsOptions: model.showTodayMap
-                            ? null
-                            : WMSTileLayerOptions(
-                                baseUrl: ParseConstants.geoServerURL,
-                                layers: [model.mapReference],
-                              ),
+                    children: [
+                      TileLayerWidget(
+                        options: TileLayerOptions(
+                          backgroundColor: Colors.white,
+                          urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          subdomains: ['a', 'b', 'c'],
+                          wmsOptions: model.showTodayMap
+                              ? null
+                              : WMSTileLayerOptions(
+                                  baseUrl: ParseConstants.geoServerURL,
+                                  layers: [model.mapReference],
+                                ),
+                        ),
                       ),
-                      MarkerLayerOptions(
-                        markers: model.markers,
-                        rotate: true,
+                      LocationMarkerLayerWidget(
+                        options: LocationMarkerLayerOptions(
+                            marker: const DefaultLocationMarker(
+                                color: kColorMainRed)),
+                      ),
+                      MarkerLayerWidget(
+                        options: MarkerLayerOptions(
+                          markers: model.markers,
+                          rotate: true,
+                        ),
                       ),
                     ],
                   ),
@@ -108,7 +120,7 @@ class MapView extends StatelessWidget {
                                 ),
                               ),
                               child: const Padding(
-                                padding: EdgeInsets.only(left: 15, right: 20),
+                                padding: EdgeInsets.only(left: 20, right: 15),
                                 child: Icon(
                                   MapIcons.more,
                                   size: 40,

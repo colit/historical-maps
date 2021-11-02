@@ -6,6 +6,8 @@ PODS:
   - flutter_archive (0.0.1):
     - Flutter
     - ZIPFoundation (= 0.9.11)
+  - flutter_compass (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -27,6 +29,7 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_archive (from `.symlinks/plugins/flutter_archive/ios`)
+  - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -46,6 +49,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_archive:
     :path: ".symlinks/plugins/flutter_archive/ios"
+  flutter_compass:
+    :path: ".symlinks/plugins/flutter_compass/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   package_info_plus:
@@ -61,6 +66,7 @@ SPEC CHECKSUMS:
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_archive: e7010a2779b4ff1483b00386bfb4e847f5836182
+  flutter_compass: cbbd285cea1584c7ac9c4e0c3e1f17cbea55e855
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e

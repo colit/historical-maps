@@ -64,19 +64,19 @@ class PageCreator {
         );
         break;
       case PageType.map:
-        output = MaterialPage(
+        output = FadeAnimationPage(
           key: appPage.key as LocalKey?,
           child: const MapView(),
         );
         break;
       case PageType.notes:
-        output = MaterialPage(
+        output = FadeAnimationPage(
           key: appPage.key as LocalKey?,
           child: const NotesView(),
         );
         break;
       case PageType.info:
-        output = MaterialPage(
+        output = FadeAnimationPage(
           key: appPage.key as LocalKey?,
           child: const InfosView(),
         );

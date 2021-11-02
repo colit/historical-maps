@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:historical_maps/core/services/location_service.dart';
@@ -24,6 +25,13 @@ class MapModel extends BaseModel {
       notifyListeners();
     });
   }
+
+  CancelableOperation _waitingFoIdleState = CancelableOperation.fromFuture(
+    Future.delayed(const Duration()),
+  );
+
+  LatLng get currentCenter => _locationService.currentMapCenter;
+  double get currentZoom => _locationService.currentMapZoom;
 
   bool _showTodayMap = false;
   bool get showTodayMap => _showTodayMap;
@@ -106,5 +114,14 @@ class MapModel extends BaseModel {
           ),
         )
         .toList(growable: false);
+  }
+
+  void updateMapPosition(MapPosition position) {
+    _waitingFoIdleState.cancel();
+    _waitingFoIdleState = CancelableOperation.fromFuture(
+      Future.delayed(const Duration(milliseconds: 500)),
+    ).then(
+      (_) => _locationService.saveMapState(position.center, position.zoom),
+    );
   }
 }

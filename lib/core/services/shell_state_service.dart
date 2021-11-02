@@ -39,7 +39,7 @@ class ShellStateService {
   var _currentStack = <AppPage>[];
 
   void setShellPage(int shellIndex) {
-    // if (shellIndex == _currentShellIndex) return;
+    if (shellIndex == _currentShellIndex && _currentStack.length == 1) return;
     final pageType = kDestinations[shellIndex].pageType;
     if (pageType != null) {
       _currentStack = [AppPage(type: pageType, key: UniqueKey())];
