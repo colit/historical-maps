@@ -10,4 +10,6 @@ abstract class IDatabaseRepository {
   Future<List<ImageEntity>> getImagesForMap(String id);
 
   Future<ImageEntity?> getImageForId(String imageId);
+
+  Future<List<ImageEntity>> getImagesForPOI(String pointOfInterestId);
 }

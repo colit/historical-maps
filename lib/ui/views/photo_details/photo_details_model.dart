@@ -9,13 +9,17 @@ class PhotoDetailsModel extends BaseModel {
 
   final MapService _mapService;
 
-  late ImageEntity? _image;
+  late List<ImageEntity> _images;
 
-  ImageEntity? get image => _image;
+  late int _initPageIndex;
+
+  List<ImageEntity> get images => _images;
+  int get initPageIndex => _initPageIndex;
 
   Future<void> getDetails(String imageId) async {
     setState(ViewState.busy);
-    _image = await _mapService.getImageForId(imageId);
+    _images = await _mapService.getImageForId(imageId);
+    _initPageIndex = _images.lastIndexWhere((image) => image.id == imageId);
     setState(ViewState.idle);
   }
 }

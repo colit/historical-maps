@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:historical_maps/core/services/location_service.dart';
+import 'package:historical_maps/ui/commons/ui_helpers.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/maps_service.dart';
 import '../../../core/services/startup_service.dart';
 import '../../views/startup/startup_model.dart';
 import '../../widgets/base_widget.dart';
-import '../../commons/colors.dart';
-import 'splash_image_widget.dart';
 
 class StartupView extends StatelessWidget {
   const StartupView({Key? key, required this.shouldLoadData}) : super(key: key);
@@ -17,7 +16,7 @@ class StartupView extends StatelessWidget {
   Widget build(BuildContext context) {
     return shouldLoadData
         ? Scaffold(
-            backgroundColor: kColorBackground,
+            backgroundColor: Colors.white,
             body: BaseWidget<StartupModel>(
               model: StartupModel(
                 startupStateService: Provider.of<StartupService>(context),
@@ -26,13 +25,12 @@ class StartupView extends StatelessWidget {
               ),
               onModelReady: (model) => model.initStartupState(),
               builder: (_, model, __) {
-                return Stack(
-                  children: const [
-                    SplashImageWidget(),
-                    Center(
-                      child: Text('loading...'),
-                    ),
-                  ],
+                return Center(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.all(UIHelper.kHorizontalSpaceLarge),
+                    child: Image.asset('assets/graphics/intro.png'),
+                  ),
                 );
               },
             ),

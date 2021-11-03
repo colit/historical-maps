@@ -6,8 +6,9 @@ import 'package:historical_maps/ui/commons/colors.dart';
 import 'package:historical_maps/ui/commons/enums.dart';
 import 'package:historical_maps/ui/views/photo_details/photo_details_model.dart';
 import 'package:historical_maps/ui/widgets/base_widget.dart';
-import 'package:historical_maps/ui/widgets/parse_image_widget.dart';
 import 'package:provider/provider.dart';
+
+import 'image_page.dart';
 
 class PhotoDetailsView extends StatelessWidget {
   const PhotoDetailsView({Key? key, required this.imageId}) : super(key: key);
@@ -23,60 +24,34 @@ class PhotoDetailsView extends StatelessWidget {
           child: Stack(
             children: [
               BaseWidget<PhotoDetailsModel>(
-                  model: PhotoDetailsModel(
-                      mapService: Provider.of<MapService>(context)),
-                  onModelReady: (model) => model.getDetails(imageId),
-                  builder: (_, model, __) {
-                    ImageEntity? image;
-                    if (model.state == ViewState.idle) {
-                      image = model.image;
-                    }
-                    return image == null
-                        ? Container()
-                        : CustomScrollView(
-                            slivers: [
-                              SliverToBoxAdapter(
-                                child: model.image != null
-                                    ? ParseImageWidget(
-                                        file: model.image!.file,
-                                      )
-                                    : Container(),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (image.title != null)
-                                        Text(
-                                          image.title!,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      if (image.description != null)
-                                        Text(image.description!,
-                                            style: const TextStyle(
-                                              height: 1.5,
-                                            )),
-                                      const SizedBox(height: 10),
-                                      if (image.author != null)
-                                        Text(image.author!),
-                                      if (image.yearPublished != null)
-                                        Text(image.yearPublished!.toString()),
-                                      if (image.source != null)
-                                        Text(image.source!),
-                                      if (image.license != null)
-                                        Text(image.license!),
-                                    ],
-                                  ),
+                model: PhotoDetailsModel(
+                    mapService: Provider.of<MapService>(context)),
+                onModelReady: (model) => model.getDetails(imageId),
+                builder: (_, model, __) {
+                  List<ImageEntity> images = [];
+                  if (model.state == ViewState.idle) {
+                    images = model.images;
+                  }
+                  return images.isEmpty
+                      ? Container()
+                      : Wrap(
+                          direction: Axis.vertical,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: PageView.builder(
+                                controller: PageController(
+                                    initialPage: model.initPageIndex),
+                                itemCount: images.length,
+                                itemBuilder: (context, index) => ImagePage(
+                                  image: images[index],
                                 ),
                               ),
-                            ],
-                          );
-                  }),
+                            )
+                          ],
+                        );
+                },
+              ),
               Positioned(
                 left: 0,
                 top: 0,

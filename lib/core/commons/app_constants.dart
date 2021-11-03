@@ -6,4 +6,5 @@ class AppConstants {
   static const initMapId = 'MAP_1450';
   static const initMapFileName = '1450.zip';
   static const initMapDescription = 'Köln im Mittelalter';
+  static const todayMapId = 'TODAY';
 }

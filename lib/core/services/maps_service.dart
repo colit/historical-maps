@@ -1,22 +1,13 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:flutter/services.dart';
-import 'package:archive/archive.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:historical_maps/core/entitles/image_entity.dart';
-import 'package:historical_maps/core/entitles/map_referece.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:historical_maps/core/commons/app_constants.dart';
+import 'package:historical_maps/core/entitles/image_entity.dart';
+import 'package:historical_maps/core/entitles/map_referece.dart';
 import 'package:historical_maps/core/entitles/loading_state_value.dart';
 import 'package:historical_maps/core/services/base_service.dart';
 import 'package:historical_maps/core/services/interfaces/i_database_repository.dart';
 import 'package:historical_maps/core/services/interfaces/i_persistent_repository.dart';
 import 'package:historical_maps/core/entitles/map_entity.dart';
-
-import 'package:historical_maps/ui/commons/enums.dart';
 
 class LoadingObject {
   LoadingObject(String temporaryPath, this.map)
@@ -32,7 +23,11 @@ class MapService extends BaseService {
     required IDatabaseRepository databaseRepository,
     required IPersistentRepository persistentRepository,
   })  : _databaseRepository = databaseRepository,
-        _persistentRepository = persistentRepository;
+        _persistentRepository = persistentRepository {
+    _databaseRepository
+        .getImagesForMap(AppConstants.todayMapId)
+        .then((value) => _todayImages = value);
+  }
 
   final IDatabaseRepository _databaseRepository;
   final IPersistentRepository _persistentRepository;
@@ -41,9 +36,11 @@ class MapService extends BaseService {
   late MapReference _currentMap;
   List<MapReference> _maps = [];
   List<ImageEntity> _imagesOnMap = [];
+  late final List<ImageEntity> _todayImages;
 
   List<MapReference> get maps => _maps;
   List<ImageEntity> get imagesOnMap => _imagesOnMap;
+  List<ImageEntity> get todayImages => _todayImages;
 
   MapReference get currentMap => _currentMap;
   int get currentMapIndex =>
@@ -56,13 +53,33 @@ class MapService extends BaseService {
     return _currentMap.key;
   }
 
-  void setCurrentMap(MapReference selectedMap) {
+  Future<void> setCurrentMap(MapReference selectedMap) async {
+    final selectedMapId = selectedMap.id;
     _currentMap = selectedMap;
-    _getImagesForMap(selectedMap.id);
-    notifyListeners(argument: selectedMap.id);
+    _imagesOnMap = await _databaseRepository.getImagesForMap(selectedMapId);
+    notifyListeners(argument: selectedMapId);
   }
 
-  // Future<void> initLocalMaps() async {
+  Future<void> getGeoserverMaps() async {
+    _maps = await _databaseRepository.getMapReferences();
+    _maps.sort((m1, m2) => m1.year.compareTo(m2.year));
+    setCurrentMap(_maps.first);
+  }
+
+  Future<List<ImageEntity>> getImageForId(String imageId) async {
+    final image = await _databaseRepository.getImageForId(imageId);
+    if (image != null) {
+      return image.pointOfInterestId == null
+          ? [image]
+          : await _databaseRepository.getImagesForPOI(image.pointOfInterestId!);
+    } else {
+      return [];
+    }
+  }
+}
+
+
+// Future<void> initLocalMaps() async {
   //   const mapId = AppConstants.initMapId;
   //   const file = AppConstants.initMapFileName;
   //   String? localPath = await _persistentRepository.getString(mapId);
@@ -90,11 +107,6 @@ class MapService extends BaseService {
   //   _getImagesForMap(_currentMap.id);
   // }
 
-  Future<void> getGeoserverMaps() async {
-    _maps = await _databaseRepository.getMapReferences();
-    _maps.sort((m1, m2) => m1.year.compareTo(m2.year));
-    setCurrentMap(_maps.first);
-  }
 
   // Future<void> getMapsList() async {
   //   final maps = await _databaseRepository.getMaps();
@@ -147,46 +159,34 @@ class MapService extends BaseService {
   //   });
   // }
 
-  Future<String> _extractFromArchive(
-      Uint8List data, String fileName, String mapId) async {
-    final archive = ZipDecoder().decodeBytes(data);
+  // Future<String> _extractFromArchive(
+  //     Uint8List data, String fileName, String mapId) async {
+  //   final archive = ZipDecoder().decodeBytes(data);
 
-    final localPath = await getApplicationDocumentsDirectory();
-    final shortName = fileName.split('.').first;
-    final pathToMap = '${localPath.path}/$shortName/';
+  //   final localPath = await getApplicationDocumentsDirectory();
+  //   final shortName = fileName.split('.').first;
+  //   final pathToMap = '${localPath.path}/$shortName/';
 
-    final totalFiles = archive.where((e) => e.isFile).length;
-    int counter = 0;
-    for (final file in archive) {
-      final name = file.name;
-      if (file.isFile) {
-        final data = file.content as List<int>;
-        final newFile = File(pathToMap + name);
-        await newFile.create(recursive: true);
-        await newFile.writeAsBytes(data);
-        counter++;
-        _loadingController.add(
-          LoadingValue(
-              objectId: mapId,
-              state: LoadingState.install,
-              value: counter / totalFiles),
-        );
-      } else {
-        final dir = pathToMap + name;
-        Directory(dir).create(recursive: true);
-      }
-    }
-    return pathToMap;
-  }
-
-  Future<void> _getImagesForMap(String mapId) async {
-    _imagesOnMap = [];
-    _imagesOnMap = await _databaseRepository.getImagesForMap(mapId);
-    notifyListeners(argument: mapId);
-  }
-
-  Future<ImageEntity?> getImageForId(String imageId) async {
-    final image = await _databaseRepository.getImageForId(imageId);
-    return image;
-  }
-}
+  //   final totalFiles = archive.where((e) => e.isFile).length;
+  //   int counter = 0;
+  //   for (final file in archive) {
+  //     final name = file.name;
+  //     if (file.isFile) {
+  //       final data = file.content as List<int>;
+  //       final newFile = File(pathToMap + name);
+  //       await newFile.create(recursive: true);
+  //       await newFile.writeAsBytes(data);
+  //       counter++;
+  //       _loadingController.add(
+  //         LoadingValue(
+  //             objectId: mapId,
+  //             state: LoadingState.install,
+  //             value: counter / totalFiles),
+  //       );
+  //     } else {
+  //       final dir = pathToMap + name;
+  //       Directory(dir).create(recursive: true);
+  //     }
+  //   }
+  //   return pathToMap;
+  // }

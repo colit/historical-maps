@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:historical_maps/core/entitles/image_entity.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -26,6 +28,8 @@ class ParseImage extends ParseObject implements ParseCloneable {
       ImageEntity.keyLicenseURL: get<String>(ImageEntity.keyLicenseURL),
       ImageEntity.keySource: get<String>(ImageEntity.keySource),
       ImageEntity.keySourceURL: get<String>(ImageEntity.keySourceURL),
+      ImageEntity.keyPointOfInterest:
+          get<ParseObject>(ImageEntity.keyPointOfInterest)?.objectId,
     };
   }
 }

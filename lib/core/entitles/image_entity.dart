@@ -15,6 +15,7 @@ class ImageEntity {
   static const keySource = 'source';
   static const keySourceURL = 'sourceURL';
   static const keyImage = 'image';
+  static const keyPointOfInterest = 'pointOfInterest';
 
   ImageEntity({
     required this.id,
@@ -30,6 +31,7 @@ class ImageEntity {
     this.licenseURL,
     this.source,
     this.sourceURL,
+    this.pointOfInterestId,
   });
   final String id;
   final ParseFile file;
@@ -44,6 +46,7 @@ class ImageEntity {
   final String? licenseURL;
   final String? source;
   final String? sourceURL;
+  final String? pointOfInterestId;
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) => ImageEntity(
         id: map[keyObjectId],
@@ -53,11 +56,12 @@ class ImageEntity {
         yearPublished: map[keyPublished],
         title: map[keyTitle],
         description: map[keyDescription],
-        author: map[keyAuthor] ?? 'Unbekannt',
+        author: map[keyAuthor] ?? 'Author unbekannt',
         authorURL: map[keyAuthorURL],
         license: map[keyLicense],
         licenseURL: map[keyLicenseURL],
         source: map[keySource],
         sourceURL: map[keySourceURL],
+        pointOfInterestId: map[keyPointOfInterest],
       );
 }

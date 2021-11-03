@@ -73,8 +73,11 @@ class MapView extends StatelessWidget {
                               ? null
                               : WMSTileLayerOptions(
                                   baseUrl: ParseConstants.geoServerURL,
-                                  layers: [model.mapReference],
-                                ),
+                                  layers: [
+                                      // 'opendem:gebco_2021'
+                                      'histo:1600_BraunHogenberg_594x407_300_rgb-c-py-g-tps'
+                                    ] //[model.mapReference],
+                                  ),
                         ),
                       ),
                       LocationMarkerLayerWidget(

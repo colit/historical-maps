@@ -1,4 +1,5 @@
 import 'package:graphql/client.dart';
+import 'package:historical_maps/core/commons/app_constants.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../entitles/image_entity.dart';
@@ -87,17 +88,19 @@ class MongoDatabaseRepository implements IDatabaseRepository {
   @override
   Future<List<ImageEntity>> getImagesForMap(String id) async {
     final output = <ImageEntity>[];
-    // var imagesForMap = QueryBuilder<ParseImage>(ParseImage());
+    late QueryBuilder queryImage;
 
-    final queryMap = QueryBuilder<ParseObject>(ParseObject('MapReference'))
-      ..whereEqualTo('objectId', id);
-
-    final queryImage = QueryBuilder<ParseImage>(ParseImage())
-      ..whereMatchesQuery('map', queryMap);
+    if (id == AppConstants.todayMapId) {
+      queryImage = QueryBuilder<ParseImage>(ParseImage())
+        ..whereEqualTo('map', null);
+    } else {
+      final queryMap = QueryBuilder<ParseObject>(ParseObject('MapReference'))
+        ..whereEqualTo('objectId', id);
+      queryImage = QueryBuilder<ParseImage>(ParseImage())
+        ..whereMatchesQuery('map', queryMap);
+    }
 
     final response = await queryImage.query();
-
-    // final response = await ParseImage().getAll();
 
     if (response.success) {
       final results = response.result;
@@ -107,6 +110,7 @@ class MongoDatabaseRepository implements IDatabaseRepository {
         }
       }
     }
+
     return output;
   }
 
@@ -120,9 +124,29 @@ class MongoDatabaseRepository implements IDatabaseRepository {
       final results = response.results;
       if (results != null) {
         output = ImageEntity.fromMap((results.first as ParseImage).map);
+        print('POI Id: ${output.pointOfInterestId}');
       }
     }
 
+    return output;
+  }
+
+  @override
+  Future<List<ImageEntity>> getImagesForPOI(String id) async {
+    final output = <ImageEntity>[];
+    final queryPOI = QueryBuilder<ParseObject>(ParseObject('PointOfInterest'))
+      ..whereEqualTo('objectId', id);
+    final queryImage = QueryBuilder<ParseImage>(ParseImage())
+      ..whereMatchesQuery(ImageEntity.keyPointOfInterest, queryPOI);
+    final response = await queryImage.query();
+    if (response.success) {
+      final results = response.results;
+      if (results != null) {
+        for (final result in results) {
+          output.add(ImageEntity.fromMap((result as ParseImage).map));
+        }
+      }
+    }
     return output;
   }
 }

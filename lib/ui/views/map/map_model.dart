@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:historical_maps/core/entitles/image_entity.dart';
 import 'package:historical_maps/core/services/location_service.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
@@ -42,17 +43,16 @@ class MapModel extends BaseModel {
 
   late int _mapServiceListener;
 
+  late final _todaMarker =
+      _mapService.todayImages.map(_markerBuilder).toList(growable: false);
+
   List<Marker> _markers = [];
-  List<Marker> get markers => _showTodayMap ? [] : _markers;
+  List<Marker> get markers => _showTodayMap ? _todaMarker : _markers;
 
   Position? _currentLocation;
-  LatLng? get currentLocation {
-    if (_currentLocation != null) {
-      return LatLng(_currentLocation!.latitude, _currentLocation!.longitude);
-    } else {
-      return null;
-    }
-  }
+  LatLng? get currentLocation => _currentLocation == null
+      ? null
+      : LatLng(_currentLocation!.latitude, _currentLocation!.longitude);
 
   late MapController _mapController;
   MapController get mapController => _mapController;
@@ -99,21 +99,21 @@ class MapModel extends BaseModel {
 
   void _updateImagesOnMap() {
     final images = _mapService.imagesOnMap;
-    _markers = images
-        .map(
-          (image) => ImageMarker(
-            anchorPos: AnchorPos.align(AnchorAlign.center),
-            height: 34,
-            width: 34,
-            image: image,
-            builder: (_) => ImageMarkerWidget(
-              id: image.id,
-              callback: (id) => _shellStateService
-                  .pushPage(PageType.photoDetails, arguments: [id]),
-            ),
-          ),
-        )
-        .toList(growable: false);
+    _markers = images.map(_markerBuilder).toList(growable: false);
+  }
+
+  ImageMarker _markerBuilder(ImageEntity image) {
+    return ImageMarker(
+      anchorPos: AnchorPos.align(AnchorAlign.center),
+      height: 34,
+      width: 34,
+      image: image,
+      builder: (_) => ImageMarkerWidget(
+        id: image.id,
+        callback: (id) =>
+            _shellStateService.pushPage(PageType.photoDetails, arguments: [id]),
+      ),
+    );
   }
 
   void updateMapPosition(MapPosition position) {
