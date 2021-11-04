@@ -31,8 +31,9 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
 
   @override
   void didChangeDependencies() {
+    final fraction = 130 / MediaQuery.of(context).size.width;
     controller = PageController(
-      viewportFraction: 0.35,
+      viewportFraction: fraction,
       initialPage: Provider.of<MapService>(context).currentMapIndex,
     );
     super.didChangeDependencies();
@@ -56,13 +57,24 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
                     child: Text(
                       model.mapInFocus,
                       textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 15.0,
+                  Center(
+                    child: Transform.translate(
+                      offset: const Offset(0, -5),
+                      child: const Icon(
+                        Icons.arrow_drop_down,
+                        size: 40,
+                      ),
+                    ),
                   ),
                   SizedBox(
-                    height: 100,
+                    height: 92,
                     width: MediaQuery.of(context).size.width,
                     child: PageView.builder(
                       controller: controller,
@@ -72,6 +84,8 @@ class _MapsLibraryWidgetState extends State<MapsLibraryWidget> {
                       },
                       itemBuilder: (context, index) => MapLibraryItemWidget(
                         index: index,
+                        isFirst: index == 0,
+                        isLast: index == model.maps.length - 1,
                         mapItem: model.maps[index],
                         callback: (index) {
                           _animateToIndex(index);

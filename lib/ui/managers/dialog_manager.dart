@@ -52,19 +52,20 @@ class _DialogManagerState extends State<DialogManager> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.only(right: 15, top: 15, bottom: 5),
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
-                    width: 40,
-                    height: 40,
+                    width: 30,
+                    height: 30,
                     decoration: const BoxDecoration(
-                      color: kColorBackgroundMiddle,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Colors.black,
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     child: const Icon(
                       Icons.close,
                       color: Colors.white,
+                      size: 20,
                     ),
                   ),
                 ),
