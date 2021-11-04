@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:historical_maps/core/entitles/image_entity.dart';
 import 'package:historical_maps/core/services/maps_service.dart';
@@ -25,13 +26,19 @@ class PhotoDetailsModel extends BaseModel {
   bool get isFirst => _currentPageIndex == 0;
   bool get isLast => _currentPageIndex == _images.length - 1;
 
+  CancelableOperation? cancelable;
+
   Future<void> getDetails(String imageId) async {
     setState(ViewState.busy);
-    _images = await _mapService.getImageForId(imageId);
-    _initPageIndex = _images.lastIndexWhere((image) => image.id == imageId);
-    _currentPageIndex = _initPageIndex;
-    _pageController = PageController(initialPage: _initPageIndex);
-    setState(ViewState.idle);
+    cancelable = CancelableOperation.fromFuture(
+      _mapService.getImageForId(imageId),
+    )..then((responce) {
+        _images = responce;
+        _initPageIndex = _images.lastIndexWhere((image) => image.id == imageId);
+        _currentPageIndex = _initPageIndex;
+        _pageController = PageController(initialPage: _initPageIndex);
+        setState(ViewState.idle);
+      });
   }
 
   void setCurrentPage(int index) {
@@ -47,5 +54,14 @@ class PhotoDetailsModel extends BaseModel {
   void goForward() {
     _pageController.animateToPage(_currentPageIndex + 1,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  @override
+  void dispose() {
+    final isBusy = !(cancelable?.isCompleted ?? true);
+    if (isBusy) {
+      cancelable?.cancel();
+    }
+    super.dispose();
   }
 }

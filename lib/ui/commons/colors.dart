@@ -23,19 +23,22 @@ const LinearGradient kGradientNavigation = LinearGradient(
 );
 
 ThemeData get themeData => ThemeData(
-    primaryColor: kColorBackgroundDark,
-    textTheme: const TextTheme(
-      headline1: TextStyle(fontSize: 40, color: Colors.red),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Colors.transparent,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white60,
-        elevation: 0),
-    tabBarTheme: const TabBarTheme(
-      indicatorSize: TabBarIndicatorSize.tab,
-      indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 2, color: Colors.white)),
-    ),
-    floatingActionButtonTheme:
-        const FloatingActionButtonThemeData(backgroundColor: kColorMainRed));
+      primaryColor: kColorBackgroundDark,
+      textTheme: const TextTheme(
+        headline1: TextStyle(fontSize: 40, color: Colors.red),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.transparent,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white60,
+          elevation: 0),
+      tabBarTheme: const TabBarTheme(
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: UnderlineTabIndicator(
+            borderSide: BorderSide(width: 2, color: Colors.white)),
+      ),
+      floatingActionButtonTheme:
+          const FloatingActionButtonThemeData(backgroundColor: kColorMainRed),
+      progressIndicatorTheme:
+          const ProgressIndicatorThemeData(color: kColorMainRed),
+    );

@@ -35,7 +35,9 @@ class PhotoDetailsView extends StatelessWidget {
                     images = model.images;
                   }
                   return images.isEmpty
-                      ? Container()
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
                       : Stack(
                           alignment: Alignment.center,
                           children: [
