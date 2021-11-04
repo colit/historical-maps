@@ -4,8 +4,10 @@ import 'package:historical_maps/core/services/maps_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
 import 'package:historical_maps/ui/commons/colors.dart';
 import 'package:historical_maps/ui/commons/enums.dart';
+import 'package:historical_maps/ui/commons/ui_helpers.dart';
 import 'package:historical_maps/ui/views/photo_details/photo_details_model.dart';
 import 'package:historical_maps/ui/widgets/base_widget.dart';
+import 'package:historical_maps/ui/widgets/pagination_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'image_page.dart';
@@ -20,7 +22,7 @@ class PhotoDetailsView extends StatelessWidget {
       backgroundColor: kColorMainRed,
       body: SafeArea(
         child: Container(
-          color: Colors.white,
+          color: kColorBackground,
           child: Stack(
             children: [
               BaseWidget<PhotoDetailsModel>(
@@ -34,20 +36,64 @@ class PhotoDetailsView extends StatelessWidget {
                   }
                   return images.isEmpty
                       ? Container()
-                      : Wrap(
-                          direction: Axis.vertical,
+                      : Stack(
+                          alignment: Alignment.center,
                           children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: PageView.builder(
-                                controller: PageController(
-                                    initialPage: model.initPageIndex),
-                                itemCount: images.length,
-                                itemBuilder: (context, index) => ImagePage(
-                                  image: images[index],
+                            Wrap(
+                              direction: Axis.vertical,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: PageView.builder(
+                                    controller: model.pageController,
+                                    itemCount: images.length,
+                                    itemBuilder: (context, index) => ImagePage(
+                                      key: ValueKey(index),
+                                      image: images[index],
+                                    ),
+                                    onPageChanged: (index) =>
+                                        model.setCurrentPage(index),
+                                  ),
+                                )
+                              ],
+                            ),
+                            if (images.length > 1)
+                              Positioned(
+                                bottom: 0,
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            kColorBackground.withAlpha(0),
+                                            kColorBackground,
+                                          ],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(
+                                          UIHelper.kVerticalSpaceMedium),
+                                      child: PaginationWidget(
+                                        year: model.currentImage.yearPublished
+                                            .toString(),
+                                        onBackward: model.isFirst
+                                            ? null
+                                            : () => model.goBack(),
+                                        onForward: model.isLast
+                                            ? null
+                                            : () => model.goForward(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            )
+                              )
                           ],
                         );
                 },

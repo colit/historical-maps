@@ -8,10 +8,12 @@ class ParseImageWidget extends StatelessWidget {
   const ParseImageWidget({
     Key? key,
     required this.file,
+    this.onReady,
     this.fit = BoxFit.cover,
   }) : super(key: key);
   final ParseFile file;
   final BoxFit fit;
+  final Function? onReady;
 
   @override
   Widget build(BuildContext context) {
@@ -19,25 +21,14 @@ class ParseImageWidget extends StatelessWidget {
       future: file.download(),
       builder: (BuildContext context, AsyncSnapshot<ParseFileBase> snapshot) {
         if (snapshot.hasData) {
+          onReady?.call();
           if (kIsWeb) {
             return Image.memory((snapshot.data as ParseWebFile).file!);
           } else {
             return Image.file((snapshot.data as ParseFile).file!);
           }
         } else {
-          return AspectRatio(
-            aspectRatio: 1.4,
-            child: Container(
-              color: const Color(0xffbbbbbb),
-              child: const Center(
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
-          );
+          return Container();
         }
       },
     );

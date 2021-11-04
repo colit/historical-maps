@@ -1,12 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:historical_maps/core/commons/parse_const.dart';
 import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
 import 'package:historical_maps/ui/commons/colors.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
+
+import 'package:proj4dart/proj4dart.dart' as proj4;
 
 import '../../../core/services/location_service.dart';
 import '../../../core/services/maps_service.dart';
@@ -20,8 +24,41 @@ import 'maps_toggle_button.dart';
 class MapView extends StatelessWidget {
   const MapView({Key? key}) : super(key: key);
 
+  List<double> getResolutions(double maxX, double minX, int zoom,
+      [double tileSize = 256.0]) {
+    var size = (maxX - minX) / tileSize;
+
+    return List.generate(zoom, (z) => size / math.pow(2, z));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Bounds<double> _bounds = Bounds<double>(
+      const CustomPoint<double>(-1877994.66, 3932281.56),
+      const CustomPoint<double>(836715.13, 9440581.95),
+    );
+    final epsg25832CRS = Proj4Crs.fromFactory(
+      code: 'EPSG:25832',
+      proj4Projection: proj4.Projection.add('EPSG:25832',
+          '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'),
+      resolutions: [
+        4891.969810252,
+        2445.984905126,
+        1222.9924525616,
+        611.4962262808,
+        305.7481131404,
+        152.87405657048,
+        76.43702828524,
+        38.21851414248,
+        19.109257071296,
+        9.554628535648,
+        4.777314267824,
+        2.388657133912,
+        1.194328566956,
+        0.597164283478
+      ],
+    );
+
     return BaseWidget<MapModel>(
       model: MapModel(
         locationService: Provider.of<LocationService>(context),
@@ -55,6 +92,7 @@ class MapView extends StatelessWidget {
                   FlutterMap(
                     mapController: model.mapController,
                     options: MapOptions(
+                      // crs: epsg25832CRS,
                       center: model.currentCenter,
                       zoom: model.currentZoom,
                       minZoom: 13.0,
@@ -69,15 +107,13 @@ class MapView extends StatelessWidget {
                           urlTemplate:
                               "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                           subdomains: ['a', 'b', 'c'],
+                          tileProvider: const CachedTileProvider(),
                           wmsOptions: model.showTodayMap
                               ? null
                               : WMSTileLayerOptions(
+                                  // crs: epsg25832CRS,
                                   baseUrl: ParseConstants.geoServerURL,
-                                  layers: [
-                                      // 'opendem:gebco_2021'
-                                      'histo:1600_BraunHogenberg_594x407_300_rgb-c-py-g-tps'
-                                    ] //[model.mapReference],
-                                  ),
+                                  layers: [model.mapReference]),
                         ),
                       ),
                       LocationMarkerLayerWidget(
@@ -164,5 +200,15 @@ class PositionMarker extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class CachedTileProvider extends TileProvider {
+  const CachedTileProvider();
+  @override
+  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+    return CachedNetworkImageProvider(
+      getTileUrl(coords, options),
+    );
   }
 }
