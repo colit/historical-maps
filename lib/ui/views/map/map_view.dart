@@ -33,31 +33,31 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Bounds<double> _bounds = Bounds<double>(
-      const CustomPoint<double>(-1877994.66, 3932281.56),
-      const CustomPoint<double>(836715.13, 9440581.95),
-    );
-    final epsg25832CRS = Proj4Crs.fromFactory(
-      code: 'EPSG:25832',
-      proj4Projection: proj4.Projection.add('EPSG:25832',
-          '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'),
-      resolutions: [
-        4891.969810252,
-        2445.984905126,
-        1222.9924525616,
-        611.4962262808,
-        305.7481131404,
-        152.87405657048,
-        76.43702828524,
-        38.21851414248,
-        19.109257071296,
-        9.554628535648,
-        4.777314267824,
-        2.388657133912,
-        1.194328566956,
-        0.597164283478
-      ],
-    );
+    // final Bounds<double> _bounds = Bounds<double>(
+    //   const CustomPoint<double>(-1877994.66, 3932281.56),
+    //   const CustomPoint<double>(836715.13, 9440581.95),
+    // );
+    // final epsg25832CRS = Proj4Crs.fromFactory(
+    //   code: 'EPSG:25832',
+    //   proj4Projection: proj4.Projection.add('EPSG:25832',
+    //       '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'),
+    //   resolutions: [
+    //     4891.969810252,
+    //     2445.984905126,
+    //     1222.9924525616,
+    //     611.4962262808,
+    //     305.7481131404,
+    //     152.87405657048,
+    //     76.43702828524,
+    //     38.21851414248,
+    //     19.109257071296,
+    //     9.554628535648,
+    //     4.777314267824,
+    //     2.388657133912,
+    //     1.194328566956,
+    //     0.597164283478
+    //   ],
+    // );
 
     return BaseWidget<MapModel>(
       model: MapModel(
@@ -112,6 +112,7 @@ class MapView extends StatelessWidget {
                               ? null
                               : WMSTileLayerOptions(
                                   // crs: epsg25832CRS,
+                                  version: '1.3.0',
                                   baseUrl: ParseConstants.geoServerURL,
                                   layers: [model.mapReference]),
                         ),

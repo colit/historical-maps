@@ -16,7 +16,8 @@ class MapReference {
   final int year;
   final String key;
 
-  String get reference => 'histo:$key';
+  // String get reference => 'histo_3857:$key';
+  String get reference => key;
 
   factory MapReference.fromGraphQL(node) => MapReference(
         id: node[keyObjectId],
