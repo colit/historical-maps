@@ -11,6 +11,7 @@ import 'core/entitles/shell_state.dart';
 import 'core/entitles/startup_state.dart';
 import 'core/services/bottom_sheet_service.dart';
 import 'core/services/dialog_service.dart';
+import 'core/services/gallery_service.dart';
 import 'core/services/location_service.dart';
 import 'core/services/shell_state_service.dart';
 import 'core/services/startup_service.dart';
@@ -30,6 +31,7 @@ List<SingleChildWidget> independentServices = [
   Provider(create: (_) => ShellStateService()),
   Provider(create: (_) => BottomSheetService()),
   Provider(create: (_) => DialogService()),
+  Provider(create: (_) => GalleryService()),
 ];
 
 List<SingleChildWidget> dependentServices = [

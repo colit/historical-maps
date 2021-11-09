@@ -17,12 +17,9 @@ class NotesView extends StatelessWidget {
               padding: const EdgeInsets.all(UIHelper.kHorizontalSpaceMedium),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    height: 300,
-                    child: Image.asset('assets/graphics/logo.png'),
-                  ),
+                  Image.asset('assets/graphics/logo.png'),
                   UIHelper.verticalSpaceMedium(),
                   const MarkdownBody(
                     data: kAboutMarkDown,

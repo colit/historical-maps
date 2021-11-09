@@ -11,8 +11,8 @@ class UIHelper {
 
   // Vertical spacing constants. Adjust to your liking.
   static const double kHorizontalSpaceSmall = 10.0;
-  static const double kHorizontalSpaceMedium = 20.0;
-  static const double kHorizontalSpaceLarge = 60.0;
+  static const double kHorizontalSpaceMedium = 15.0;
+  static const double kHorizontalSpaceLarge = 30.0;
 
   /// Returns a vertical space with height set to [kVerticalSpaceSmall]
   static Widget verticalSpaceSmall() {

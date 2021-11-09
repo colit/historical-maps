@@ -7,6 +7,7 @@ import 'package:historical_maps/core/commons/parse_const.dart';
 import 'package:historical_maps/core/services/bottom_sheet_service.dart';
 import 'package:historical_maps/core/services/shell_state_service.dart';
 import 'package:historical_maps/ui/commons/colors.dart';
+import 'package:historical_maps/ui/commons/ui_helpers.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
@@ -111,7 +112,7 @@ class MapView extends StatelessWidget {
                           wmsOptions: model.showTodayMap
                               ? null
                               : WMSTileLayerOptions(
-                                  // crs: epsg25832CRS,
+                                  format: 'image/jpeg',
                                   version: '1.3.0',
                                   baseUrl: ParseConstants.geoServerURL,
                                   layers: [model.mapReference]),
@@ -132,47 +133,28 @@ class MapView extends StatelessWidget {
                   ),
                   SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: MapsToggleButton(
-                              callback: model.setMapView,
-                              label: model.year,
-                              initWithHistoricalMap: !model.showTodayMap,
-                            ),
-                          ),
-                          Expanded(child: Container()),
-                          InkWell(
-                            onTap: () => Provider.of<BottomSheetService>(
-                                    context,
-                                    listen: false)
-                                .showBottomSheet(const MapsLibraryWidget()),
-                            child: Container(
-                              height: 40,
-                              decoration: const BoxDecoration(
-                                color: kColorMainRed,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  bottomLeft: Radius.circular(20),
-                                ),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.only(left: 20, right: 15),
-                                child: Icon(
-                                  MapIcons.more,
-                                  size: 40,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      padding:
+                          const EdgeInsets.all(UIHelper.kHorizontalSpaceMedium),
+                      child: MapsToggleButton(
+                        callback: model.setMapView,
+                        label: model.year,
+                        initWithHistoricalMap: !model.showTodayMap,
                       ),
                     ),
-                  )
+                  ),
+                  Positioned(
+                    left: UIHelper.kVerticalSpaceMedium,
+                    bottom: UIHelper.kVerticalSpaceMedium,
+                    child: FloatingActionButton(
+                      child: const Icon(
+                        MapIcons.library,
+                        size: 34,
+                      ),
+                      onPressed: () => Provider.of<BottomSheetService>(context,
+                              listen: false)
+                          .showBottomSheet(const MapsLibraryWidget()),
+                    ),
+                  ),
                 ],
               ),
             )
@@ -213,3 +195,33 @@ class CachedTileProvider extends TileProvider {
     );
   }
 }
+
+
+/*
+InkWell(
+                            onTap: () => Provider.of<BottomSheetService>(
+                                    context,
+                                    listen: false)
+                                .showBottomSheet(const MapsLibraryWidget()),
+                            child: Container(
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                color: kColorMainRed,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                ),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.only(left: 20, right: 15),
+                                child: Icon(
+                                  MapIcons.more,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+
+
+*/

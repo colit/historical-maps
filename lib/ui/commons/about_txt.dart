@@ -1,7 +1,9 @@
 const kAboutMarkDown = '''
-Die Anwendung **„Karten für Zeitreisende“** wurde im Rahmen des Kultur Hackathons **{COD1NG DA V1NCH1} NIEDER:RHEIN:LAND 2021** erstellt.
+Die Anwendung **„Karten für Zeitreisende“** wurde im Rahmen des Kultur Hackathons **{COD1NG DA V1NCH1} NIEDER:RHEIN:LAND 2021** entwickelt.
 
 Die historischen Stadtpläne wurden von der **Archäologische Zone Köln** und dem **Amt für Liegenschaften, Vermessung und Kataster der Stadt Köln** in Koopertion digitalisiert und frei zur Verfügung gestellt. Als WebMappingService (WMS) wurden die Stadtpläne von **OK Lab Köln / OpenMaps.online** aufbereitet.
+
+Mit Bildmaterial vom **Rheinischen Bildarchiv**, **Universitäts- und Landesbibliothek Düsseldorf**, **Wikimedia**.
 
 Idee, Konzept und Umsetzung der Anwendung: **Constantin Litvak, Köln**.
 

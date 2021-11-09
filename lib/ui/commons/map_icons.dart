@@ -25,4 +25,16 @@ class MapIcons {
     0xe902,
     fontFamily: _kFontFamily,
   );
+  static const IconData arrowBackward = IconData(
+    0xe905,
+    fontFamily: _kFontFamily,
+  );
+  static const IconData arrowForward = IconData(
+    0xe906,
+    fontFamily: _kFontFamily,
+  );
+  static const IconData library = IconData(
+    0xe907,
+    fontFamily: _kFontFamily,
+  );
 }
