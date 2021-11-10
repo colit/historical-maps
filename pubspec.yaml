@@ -52,7 +52,6 @@ flutter:
 
   assets:
     - assets/graphics/
-    - assets/maps/1450.zip
 
   fonts:
     - family: MapIcons
